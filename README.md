@@ -1,10 +1,8 @@
 MidiKatapult
 ============
 
-... from http://midikatapult.com
+Forked from [https://github.com/markqvist/MidiKatapult](https://github.com/markqvist/MidiKatapult)
 
-I am not actively developing this anymore. Feel free to hack or extend, fork or use for whatever you can come up with!
+http://midikatapult.com
 
 Licensed under GPLv3
-
-:)
