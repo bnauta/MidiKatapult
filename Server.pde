@@ -11,7 +11,7 @@ void initServer() {
   debug("Starting server on port " + serverPort);
   slaveServer = new Server(this, serverPort);
   //Server tsrv = new Server(this, serverPort);
-  
+
   if (slaveServer != null) {
     online = true;
     debug("Server started");
@@ -30,7 +30,7 @@ void locatePort() {
       serverPort++;
     } catch (Exception e) {
       foundPort = true;
-      
+
     }
   }
 }
@@ -55,8 +55,8 @@ void readServer() {
           slave.write("meta+trynextTT");
           message = null;
         }
-      } 
-      
+      }
+
       if (message != null) interpretMessage(message);
     } else {
       long now = (new Date()).getTime();
@@ -101,7 +101,7 @@ void interpretMessage(String message) {
         }
       }
     }
-    
+
     if (components.length == 3) {
       if (!components[0].equals("") && !components[1].equals("") && !components[2].equals("")) {
         int x = Integer.parseInt(components[0]);

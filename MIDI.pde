@@ -15,9 +15,9 @@ int customChannel;
 
 class MidiMsg extends MidiMessage {
   MidiMsg(byte[] data) {
-    super(data); 
+    super(data);
   }
-  
+
   MidiMsg clone() {
     return this;
   }
@@ -31,7 +31,7 @@ class MIDI extends Object {
   Receiver out = null;
   Transmitter in = null;
   public MidiDevice.Info[] infos;
-  
+
   public MIDI(String target) {
     try {
       //debug("1a");
@@ -45,9 +45,9 @@ class MIDI extends Object {
           deviceNumber = i;
         }
       }
-      
+
       //debug("Device is number "+deviceNumber);
-      
+
       if (deviceNumber != 256) {
         MidiDevice device = MidiSystem.getMidiDevice(infos[deviceNumber]);
         device.open();
@@ -62,7 +62,7 @@ class MIDI extends Object {
       this.initialised = false;
     }
   }
-    
+
   void sendOff(int note, int vel, int channel) {
     ShortMessage msg = new ShortMessage();
     try {
@@ -73,7 +73,7 @@ class MIDI extends Object {
     out.send(msg, midiTS);
     midiTS++;
   }
-  
+
   void sendOn(int note, int vel, int channel) {
     //debug("sendOn() note="+note+" vel="+vel+" channel="+channel);
     ShortMessage msg = new ShortMessage();
@@ -85,8 +85,8 @@ class MIDI extends Object {
     if (!NOSEND) out.send(msg, midiTS);
     midiTS++;
   }
-  
-  void sendCtl(int note, int vel, int channel) { 
+
+  void sendCtl(int note, int vel, int channel) {
     ShortMessage msg = new ShortMessage();
     try {
       msg.setMessage(CTLCHG, channel, note, vel);
@@ -96,8 +96,8 @@ class MIDI extends Object {
     if (!NOSEND) out.send(msg, midiTS);
     midiTS++;
   }
-  
-  void sendPgr(int program, int channel) { 
+
+  void sendPgr(int program, int channel) {
     ShortMessage msg = new ShortMessage();
     try {
       msg.setMessage(PRGCHG, channel, program, 0);
@@ -107,15 +107,15 @@ class MIDI extends Object {
     if (!NOSEND) out.send(msg, midiTS);
     midiTS++;
   }
-  
-  
+
+
   void close() {
-    if (device != null) { 
+    if (device != null) {
       //debug("Closing "+this+" ("+infos[deviceNumber].getName()+")");
       device.close();
     }
   }
-  
+
   void reset() {
     if (device != null) {
       try {
@@ -134,7 +134,7 @@ class MIDIinput extends Object {
   boolean initialised = false;
   Transmitter in = null;
   MidiDevice.Info[] infos;
-  
+
   public MIDIinput(String target, Receiver listener) {
     try {
       infos = MidiSystem.getMidiDeviceInfo();
@@ -146,9 +146,9 @@ class MIDIinput extends Object {
           deviceNumber = i;
         }
       }
-      
+
       //debug("Device is number "+deviceNumber);
-      
+
       if (deviceNumber != 256) {
         MidiDevice device = MidiSystem.getMidiDevice(infos[deviceNumber]);
         device.open();
@@ -163,14 +163,14 @@ class MIDIinput extends Object {
       this.initialised = false;
     }
   }
-  
+
   void close() {
-    if (device != null) { 
+    if (device != null) {
       //debug("Closing "+this+" ("+infos[deviceNumber].getName()+")");
       device.close();
     }
   }
-  
+
   void reset() {
     if (device != null) {
       try {
@@ -185,23 +185,23 @@ class MIDIinput extends Object {
 
 class MIDIListener implements Receiver {
   String context;
-  
+
   public MIDIListener(String context) {
     this.context = context;
 //    super.init();
   }
-  
+
   void close() {
-    
+
   }
-  
+
   void send(MidiMessage msg, long ts) {
     ShortMessage smsg = (ShortMessage) msg;
     int channel = smsg.getChannel();
     byte[] data = msg.getMessage();
     debug("Control MIDI: "+data[1]);
     debug("USERMODE: "+USERMODE);
-    
+
     if ((data[0] & 0xFF) == NOTEON) {
       if (context.equals("Launchpad")) {
         launchpadAction(data[1], data[2]);
@@ -210,23 +210,23 @@ class MIDIListener implements Receiver {
         softwareNoteAction(data[1], data[2], channel);
       }
     }
-    
+
     if ((data[0] & 0xFF) == CTLCHG+channel ) {
       if (context.equals("Software")) {
         softwareCtlAction(data[1], data[2], channel);
       }
-      
+
       if (context.equals("Launchpad")) {
         if (LIVECONTROL == false) {
-          if (data[1] == 107 && data[2] == 127 && currentPage < pageNumbers[numberOfPages-1]) { 
+          if (data[1] == 107 && data[2] == 127 && currentPage < pageNumbers[numberOfPages-1]) {
             selectedPage = pageNumbers[indexForKey(pageNumbers, selectedPage)+1]; loadLayout(selectedPage);
           }
-          
+
           if (data[1] == 106 && data[2] == 127 && currentPage > 1) {
             selectedPage = pageNumbers[indexForKey(pageNumbers, selectedPage)-1]; loadLayout(selectedPage);
           }
         }
-        
+
         if (data[1] == 111 && data[2] == 127) {
           if (LIVECONTROL == false) {
             DEMO = !(DEMO);
@@ -237,7 +237,7 @@ class MIDIListener implements Receiver {
             }
           }
         }
-        
+
         if (data[1] == 108 && data[2] == 127) {
           if (LIVEENABLED) {
             clearDisplay();
@@ -247,7 +247,7 @@ class MIDIListener implements Receiver {
             reloadLayouts();
           }
         }
-        
+
         if (data[1] == 109 && data[2] == 127 && USERMODE == 1) {
           if (USERMODE == 1) {
             LIVECONTROL = false;
@@ -260,7 +260,7 @@ class MIDIListener implements Receiver {
             NOSEND = true;
           }
         }
-        
+
         if (data[1] == 110 && data[2] == 127 && USERMODE == 2) {
           if (USERMODE == 2) {
             LIVECONTROL = false;
@@ -275,7 +275,7 @@ class MIDIListener implements Receiver {
         }
       }
     }
-    
+
     //debug(context+" "+(data[0] & 0xFF)+" "+data[1]+" "+data[2]);
   }
 }
@@ -328,9 +328,9 @@ void launchpadAction(int segment, int value){
       if (segment >= 32) { segment -= 8; }
       if (segment >= 16) { segment -= 8; }
     }
-    
+
     debug("Translated segment: "+segment);
-    
+
     if (segment >= 0 && segment <= 71 && segment != 64) {
       if (grid[segment] != null) {
         if (value == 127) { grid[segment].down(); }

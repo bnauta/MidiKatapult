@@ -20,7 +20,7 @@ void display(int x, int y, int lcolor) {
     if (lcolor == AMBER) fill(255, 127, 0, o);
     if (lcolor == AMBERL) fill(127, 63, 0, o);
     if (lcolor == YELLOW) fill(255, 255, 0, o);
-    
+
     if (lcolor == BLUE) fill(0, 0, 255, o);
     if (lcolor == BLUEL) fill(0, 0, 127, o);
     if (lcolor == CYAN) fill(0, 255, 255, o);
@@ -29,8 +29,8 @@ void display(int x, int y, int lcolor) {
     if (lcolor == MAGENTAL) fill(127, 0, 127, o);
     if (lcolor == WHITE) fill(230, 230, 230, o);
     if (lcolor == WHITEL) fill(180, 180, 200, o);
-    
-    
+
+
     if (x >= 0 && x < 8 && y >= 0 && y < 8 && displaystate) {
       rect((x*buttonSize)+FRAMEBORDER+offset, (y*buttonSize)+FRAMEBORDER+offset, buttonSize-offset, buttonSize-offset);
       o = 16;
@@ -49,7 +49,7 @@ void display(int x, int y, int lcolor) {
       if (lcolor == MAGENTAL) fill(127, 0, 127, o);
       if (lcolor == WHITE) fill(230, 230, 230, o);
       if (lcolor == WHITEL) fill(200, 200, 200, o);
-      
+
       noStroke();
       for(int i = 30; i > 0; i--) {
         ellipse((x*buttonSize+(buttonSize/2))+FRAMEBORDER+offset, (y*buttonSize+(buttonSize/2))+FRAMEBORDER+offset, (buttonSize-i*2)-4, (buttonSize-i*2)-4);
@@ -111,8 +111,8 @@ int randomColor() {
   colors[8] = BLACK;
   colors[9] = BLACK;
   colors[10] = BLACK;
-  
+
   int select = (int)random(11);
-  
+
   return colors[select];
 }

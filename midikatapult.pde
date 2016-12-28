@@ -19,7 +19,7 @@ void setup(){
   if (launchpad.initialised) launchpad.sendCtl(0, 0, 0);
   sleep(500);
   if (launchpad.initialised) launchpad.sendCtl(0, 0, 0);
-  
+
   if (launchpad.initialised) {
     //debug("Launchpad detected, huzzah!");
     launchpad.reset();
@@ -72,7 +72,7 @@ void initMidiSystem() {
   software.reset();
   softwareIn.reset();
   launchpadIn.reset();
-  
+
   displaystate = true;
   clearDisplay();
   displaystate = false;
@@ -105,7 +105,7 @@ public void stop() {
   cleanup();
   clearDisplay();
   super.stop();
-} 
+}
 
 void mousePressed() {
   if (mousestate.equals("quit")) {

@@ -9,7 +9,7 @@ class License extends Object {
   String[] licenseKey;
   protected boolean valid = false;
   MessageDigest md;
-  
+
   public License() {
     sessionT = (new Date()).getTime();
     dpr = "";
@@ -18,7 +18,7 @@ class License extends Object {
     try {
       //println("License test running...");
       md = MessageDigest.getInstance("MD5");
-      
+
       String[] components = split(licenseKey[0], "-");
       String id = licenseKey[0].substring(0, 6);
       String checksum = components[1];
@@ -42,7 +42,7 @@ class License extends Object {
       }
     } catch (Exception e) { };
   }
-  
+
   public boolean isValid() {
     return valid;
   }

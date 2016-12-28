@@ -134,7 +134,7 @@ void loadConfig() {
       overrideBitmap(1, configLine[1]);
     }
     if (configLine[0].equals("b3")) {
-      overrideBitmap(2, configLine[1]); 
+      overrideBitmap(2, configLine[1]);
     }
     if (configLine[0].equals("b4")) {
       overrideBitmap(3, configLine[1]);
@@ -145,7 +145,7 @@ void loadConfig() {
     if (configLine[0].equals("b6")) {
       overrideBitmap(5, configLine[1]);
     }
-    
+
   }
   if (!SOFTWAREIN.equals("") && !SOFTWARE.equals("")) DEVICECONFIG = true;
   storeDefaultColors();

@@ -10,7 +10,7 @@ class MText extends Object {
   boolean animate = false;
   boolean done = false;
   String text;
-  
+
   MText(String text, int x, int y) {
     this.x = (float)x;
     this.y = (float)y;
@@ -18,24 +18,24 @@ class MText extends Object {
     this.starty = y;
     this.text = text;
   }
-  
+
   void animate() {
     animate = true;
   }
-  
+
   void setDuration(int duration) {
     this.duration = duration;
   }
-  
+
   void setDestination(int x, int y) {
     endx = x;
     endy = y;
   }
-  
+
   boolean isDone() {
     return done;
   }
-  
+
   void draw() {
     if (step < duration) {
       x = (x + ((float)(endx-startx)/(float)duration));
@@ -51,7 +51,7 @@ class MText extends Object {
       text(text, (int)x, (int)y);
     }
   }
-  
+
 }
 
 class MLine extends Object {
@@ -65,31 +65,31 @@ class MLine extends Object {
   int step;
   boolean animate = false;
   boolean done = false;
-  
+
   MLine(int x, int y) {
     this.x = (float)x;
     this.y = (float)y;
     this.startx = x;
     this.starty = y;
   }
-  
+
   void animate() {
     animate = true;
   }
-  
+
   void setDuration(int duration) {
     this.duration = duration;
   }
-  
+
   void setDestination(int x, int y) {
     endx = x;
     endy = y;
   }
-  
+
   boolean isDone() {
     return done;
   }
-  
+
   void draw() {
     if (step < duration) {
       x = (x + ((float)(endx-startx)/(float)duration));
@@ -103,12 +103,12 @@ class MLine extends Object {
       line(startx, starty, x, y);
     }
   }
-  
+
 }
 
 void sleep(int m) {
   float now = millis();
   while(millis() < now + (float)m) {
-    
+
   }
 }

@@ -31,7 +31,7 @@ class Control {
   int numberOfChains = 0;
   boolean chainSendFlags[] = new boolean[MAXCHAINS];
   Control chains[] = new Control[MAXCHAINS];
-  
+
   void up(){}
   void down(){}
   void on(){}
@@ -42,8 +42,8 @@ class Control {
   void nakedSetValue(int ivalue) {}
   void update(){}
   void cancelSchedule(){}
-  
-  
+
+
   void chainTo(Control control, boolean send) {
     chains[numberOfChains] = control;
     //debug("Chaining "+this+" to "+control);
@@ -51,7 +51,7 @@ class Control {
     numberOfChains++;
     isChained = true;
   }
-  
+
   void propagateToChainedControls() {
     if(isChained) {
       for (int i = 0; i < numberOfChains; i++) {
@@ -69,7 +69,7 @@ class GridSegment extends Control {
     debug(this+"x="+this.x+" y="+this.y+" on()");
     ledOn(x, y, activecolor);
   }
-  
+
   void off() {
     debug(this+"x="+this.x+" y="+this.y+" off()");
     ledOn(x, y, idlecolor);
@@ -78,7 +78,7 @@ class GridSegment extends Control {
 
 class PageButton extends GridSegment {
   int number;
-  
+
   PageButton(int inumber) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -88,12 +88,12 @@ class PageButton extends GridSegment {
     grid[number] = this;
     ledOn((number % 8), (int)((float)number / 8), idlecolor);
   }
-  
+
   void down() {
     ledOn((number % 8), (int)((float)number / 8), activecolor);
     loadLayout(number+1);
   }
-  
+
   void update() {
     x = 8;
     y = 7;
@@ -116,19 +116,19 @@ class LED extends GridSegment {
     activecolor = INDICATORONCOLOR;
     ledOn(x, y, idlecolor);
   }
-  
+
   void send() {
     controlOut(x, y, state);
   }
-  
+
   void down() {
-    
+
   }
-  
+
   void up() {
 
   }
-  
+
   void update() {
     if (value == 0) {
       off();
@@ -137,7 +137,7 @@ class LED extends GridSegment {
       on();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     if (ivalue > 0) { value = ivalue; state = ON; } else { value = OFF; state = OFF; }
@@ -176,19 +176,19 @@ class Button extends GridSegment {
     }
     ledOn(x, y, idlecolor);
   }
-  
+
   void setVelocity(int vel) {
     velocity = vel;
   }
-  
+
   void send() {
     debug("Velocity is "+velocity);
     if (channel != 0) outputChannel = channel-1;
     if (velocity == -1) controlOut(x, y, state);
     if (velocity != -1 && state == ON) controlOut(x, y, velocity);
-    if (velocity != -1 && state == OFF) controlOut(x, y, state); 
+    if (velocity != -1 && state == OFF) controlOut(x, y, state);
   }
-  
+
   void down() {
     sn = false;
     if (type == HOLD) {
@@ -211,7 +211,7 @@ class Button extends GridSegment {
       }
     }
   }
-  
+
   void up() {
     sn = false;
     if (type == HOLD) {
@@ -221,7 +221,7 @@ class Button extends GridSegment {
       if (!persistence) off();
     }
   }
-  
+
   void update() {
     debug("sn "+sn);
     if (value == 0) {
@@ -231,7 +231,7 @@ class Button extends GridSegment {
       on();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     softwarevalue = ivalue;
@@ -246,7 +246,7 @@ class Note extends GridSegment {
   int vel;
   boolean sendoff = false;
   boolean toggle = false;
-  
+
   Note(int ix, int iy, int octave, String note, int vel) {
     controlID = (int)random(1000);
     page = selectedPage;
@@ -260,7 +260,7 @@ class Note extends GridSegment {
     activecolor = NOTEACTIVECOLOR;
     this.note = addOctave(parseNote(note), octave);
     this.vel = vel;
-    
+
     if (x < 8) {
       grid[y*8+x] = this;
     }
@@ -268,10 +268,10 @@ class Note extends GridSegment {
       //debug("Mapping side button:"+this);
       grid[65+y] = this;
     }
-    
+
     ledOn(x, y, idlecolor);
   }
-  
+
   Note(int ix, int iy, int midi, int vel) {
     controlID = (int)random(1000);
     page = selectedPage;
@@ -285,7 +285,7 @@ class Note extends GridSegment {
     activecolor = NOTEACTIVECOLOR;
     this.note = midi;
     this.vel = vel;
-    
+
     if (x < 8) {
       grid[y*8+x] = this;
     }
@@ -293,10 +293,10 @@ class Note extends GridSegment {
       //debug("Mapping side button:"+this);
       grid[65+y] = this;
     }
-    
+
     ledOn(x, y, idlecolor);
   }
-  
+
   int parseNote(String note) {
     note = note.toLowerCase();
     if (note.equals("c")) return 0;
@@ -313,12 +313,12 @@ class Note extends GridSegment {
     if (note.equals("b")) return 11;
     return 0;
   }
-  
+
   int addOctave(int note, int octave) {
     octave = octave+1;
     return note+(octave*12);
   }
-  
+
   void send() {
     if (channel != 0) outputChannel = channel-1;
     if (sendoff) {
@@ -329,13 +329,13 @@ class Note extends GridSegment {
       noteOut(note, vel);
     }
   }
-  
+
   void sendOff() {
     if (channel != 0) outputChannel = channel-1;
     //debug("sendOff");
     noteOut(note, 0);
   }
-  
+
   void down() {
     if (!toggle) {
       send();
@@ -352,14 +352,14 @@ class Note extends GridSegment {
       }
     }
   }
-  
+
   void up() {
     if (!toggle) {
       sendOff();
       off();
     }
   }
-  
+
   void update() {
     if (value == 0) {
       off();
@@ -368,12 +368,12 @@ class Note extends GridSegment {
       on();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     value = ivalue;
-    if (ivalue == 0) { 
-      sendoff = true;    
+    if (ivalue == 0) {
+      sendoff = true;
     }
     propagateToChainedControls();
   }
@@ -384,7 +384,7 @@ class CC extends GridSegment {
   int vel;
   boolean toggle;
   boolean sendoff = false;
-  
+
   CC(int ix, int iy, int cc, int vel) {
     controlID = (int)random(1000);
     page = selectedPage;
@@ -399,7 +399,7 @@ class CC extends GridSegment {
     this.note = cc;
     this.vel = vel;
     toggle = false;
-    
+
     if (x < 8) {
       grid[y*8+x] = this;
     }
@@ -407,10 +407,10 @@ class CC extends GridSegment {
       //debug("Mapping side button:"+this);
       grid[65+y] = this;
     }
-    
+
     ledOn(x, y, idlecolor);
   }
-  
+
   void send() {
     if (channel != 0) outputChannel = channel-1;
     if (sendoff) {
@@ -421,22 +421,22 @@ class CC extends GridSegment {
       controlOut(note, vel);
     }
   }
-  
+
   void sendOff() {
     //debug("sendOff");
     //controlOut(note, 0);
   }
-  
+
   void down() {
       send();
       on();
   }
-  
+
   void up() {
       sendOff();
       off();
   }
-  
+
   void update() {
     if (value == 0) {
       off();
@@ -445,12 +445,12 @@ class CC extends GridSegment {
       on();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     value = ivalue;
-    if (ivalue == 0) { 
-      sendoff = true;    
+    if (ivalue == 0) {
+      sendoff = true;
     }
     propagateToChainedControls();
   }
@@ -460,7 +460,7 @@ class PC extends GridSegment {
   int note;
   int vel;
   boolean sendoff = false;
-  
+
   PC(int ix, int iy, int program) {
     controlID = (int)random(1000);
     page = selectedPage;
@@ -473,7 +473,7 @@ class PC extends GridSegment {
     idlecolor = PCIDLECOLOR;
     activecolor = PCACTIVECOLOR;
     this.note = program;
-    
+
     if (x < 8) {
       grid[y*8+x] = this;
     }
@@ -481,10 +481,10 @@ class PC extends GridSegment {
       //debug("Mapping side button:"+this);
       grid[65+y] = this;
     }
-    
+
     ledOn(x, y, idlecolor);
   }
-  
+
   void send() {
     if (channel != 0) outputChannel = channel-1;
     if (sendoff) {
@@ -495,23 +495,23 @@ class PC extends GridSegment {
       programOut(note);
     }
   }
-  
+
   void sendOff() {
     //debug("sendOff");
     //controlOut(note, 0);
   }
-  
+
   void down() {
       send();
       on();
   }
-  
+
   void up() {
       sendOff();
       off();
 
   }
-  
+
   void update() {
     if (value == 0) {
       off();
@@ -520,12 +520,12 @@ class PC extends GridSegment {
       on();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     value = ivalue;
-    if (ivalue == 0) { 
-      sendoff = true;    
+    if (ivalue == 0) {
+      sendoff = true;
     }
     propagateToChainedControls();
   }
@@ -559,7 +559,7 @@ class Kbd extends GridSegment {
     for (int i = 0; i < keys.length; i++) {
       keys[i] = parseKey(keysS[i]);
     }
-    
+
     if (x < 8) {
       grid[y*8+x] = this;
     }
@@ -567,10 +567,10 @@ class Kbd extends GridSegment {
       //debug("Mapping side button:"+this);
       grid[65+y] = this;
     }
-    
+
     ledOn(x, y, idlecolor);
   }
-  
+
   int parseKey(String keystr) {
     if (keystr.equals("shift")) return KeyEvent.VK_SHIFT;
     if (keystr.equals("control")) return KeyEvent.VK_CONTROL;
@@ -649,7 +649,7 @@ class Kbd extends GridSegment {
     if (keystr.equals("-")) return KeyEvent.VK_MINUS;
     return 0;
   }
-  
+
   void send() {
     for (int i = 0; i < keys.length; i++) {
       if (keys[i] != 0) {
@@ -671,12 +671,12 @@ class Kbd extends GridSegment {
     send();
     on();
   }
-  
+
   void up() {
     sendOff();
     off();
   }
-  
+
   void update() {
     if (value == 0) {
       off();
@@ -685,12 +685,12 @@ class Kbd extends GridSegment {
       on();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     value = ivalue;
-    if (ivalue == 0) { 
-      sendoff = true;    
+    if (ivalue == 0) {
+      sendoff = true;
     }
     propagateToChainedControls();
   }
@@ -698,7 +698,7 @@ class Kbd extends GridSegment {
 
 class FaderSegment extends GridSegment {
   Fader owner;
-  
+
   FaderSegment(int ix, int iy, Fader iowner) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -711,34 +711,34 @@ class FaderSegment extends GridSegment {
     activecolor = FADERACTIVECOLOR;
     off();
   }
-  
+
   void down() {
     owner.faderAction(this);
   }
-  
+
   void update() {
     if (x == owner.x && y == owner.y) {
       owner.update();
     }
   }
-  
+
   void send() {
     if (x == owner.x && y == owner.y) {
       owner.send();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     if (x == owner.x && y == owner.y) {
       owner.nakedSetValue(ivalue);
     }
   }
-  
+
   void chainTo(Control control, boolean send) {
     owner.chainTo(control, send);
   }
-  
+
   void propagateToChainedControls() {
     owner.propagateToChainedControls();
   }
@@ -748,10 +748,10 @@ class Fader extends Control {
   FaderSegment[] segments;
   long lastupdate;
   boolean schedule;
-  
-  
+
+
   void faderAction(FaderSegment sender){}
-  
+
   boolean canUpdate() {
     long now = (new Date()).getTime();
     debug("l "+lastupdate);
@@ -762,22 +762,22 @@ class Fader extends Control {
       return false;
     } else {
      return true;
-    } 
+    }
   }
-  
+
   void schedule() {
     schedule = true;
     new Scheduler(this);
   }
-  
+
   void cancelSchedule() {
     schedule = false;
   }
-  
+
   boolean hasSchedule() {
     return schedule;
   }
-  
+
 }
 
 class XFader extends Fader {
@@ -799,7 +799,7 @@ class XFader extends Fader {
     }
     grid[y*8+x].on();
   }
-  
+
   void faderAction(FaderSegment sender) {
     sx = sender.x;
     float relx = sx - x;
@@ -807,11 +807,11 @@ class XFader extends Fader {
     float amount = ((relx + quantum) / (float)xsize) * 127;
     setValue((int)amount);
   }
-  
+
   void update() {
     //if (lastsx == sx && !hasSchedule()) schedule();
     if (lastsx != sx || canUpdate()) {
-      if (page == selectedPage) {    
+      if (page == selectedPage) {
         for(int i = 0; i < xsize; i++) {
           if (i <= sx) { grid[y*8+x+i].on(); } else { grid[y*8+x+i].off(); }
         }
@@ -820,17 +820,17 @@ class XFader extends Fader {
       }
     }
   }
-  
+
   void send() {
     if (channel != 0) outputChannel = channel-1;
     controlOut(x, y, value);
   }
-  
+
   void setTakeover(int itakeover) {
     //debug("setTakeover()");
     takeover = itakeover;
   }
-  
+
   void nakedSetValue(int ivalue) {
     if (TAKEOVER == false) {
       float step = 127 / (xsize-1);
@@ -841,7 +841,7 @@ class XFader extends Fader {
       //debug("nakedSetValueX() blocked because takeover is in progress.");
     }
   }
-  
+
   void takeoverSetValue(int ivalue) {
     float step = 127 / (xsize-1);
     sx = (int)(ivalue / step);
@@ -850,7 +850,7 @@ class XFader extends Fader {
     if (lastsx != sx) update();
     propagateToChainedControls();
   }
-  
+
   void setValue(int ivalue) {
     if (takeover == 0) {
       float step = 127 / (xsize-1);
@@ -862,14 +862,14 @@ class XFader extends Fader {
     } else {
       //debug("Delegating control to takeover routine");
       takeover(ivalue);
-    }    
+    }
   }
-  
+
   void takeover(int ivalue) {
     threadsSpawned++;
     TakeOver takeover = new TakeOver(this, ivalue, this.takeover);
   }
-  
+
 }
 
 class IXFader extends Fader {
@@ -891,7 +891,7 @@ class IXFader extends Fader {
     }
     grid[y*8+x].on();
   }
-  
+
   void faderAction(FaderSegment sender) {
     sx = sender.x;
     float relx = sx - x;
@@ -899,11 +899,11 @@ class IXFader extends Fader {
     float amount = ((relx + quantum) / (float)xsize) * 127;
     setValue(127-(int)amount);
   }
-  
+
   void update() {
     //if (lastsx == sx && !hasSchedule()) schedule();
     if (lastsx != sx || canUpdate()) {
-      if (page == selectedPage) {    
+      if (page == selectedPage) {
         for(int i = xsize-1; i >= 0; i--) {
           debug("sx="+((xsize-1)-sx)+" i="+i);
           if (i >= (xsize-1)-sx) { grid[y*8+x+i].on(); } else { grid[y*8+x+i].off(); }
@@ -914,17 +914,17 @@ class IXFader extends Fader {
       }
     }
   }
-  
+
   void send() {
     if (channel != 0) outputChannel = channel-1;
     controlOut(x, y, value);
   }
-  
+
   void setTakeover(int itakeover) {
     //debug("setTakeover()");
     takeover = itakeover;
   }
-  
+
   void nakedSetValue(int ivalue) {
     if (TAKEOVER == false) {
       float step = 127 / (xsize-1);
@@ -935,7 +935,7 @@ class IXFader extends Fader {
       //debug("nakedSetValueX() blocked because takeover is in progress.");
     }
   }
-  
+
   void takeoverSetValue(int ivalue) {
     float step = 127 / (xsize-1);
     sx = (int)(ivalue / step);
@@ -944,7 +944,7 @@ class IXFader extends Fader {
     if (lastsx != sx) update();
     propagateToChainedControls();
   }
-  
+
   void setValue(int ivalue) {
     if (takeover == 0) {
       float step = 127 / (xsize-1);
@@ -956,20 +956,20 @@ class IXFader extends Fader {
     } else {
       //debug("Delegating control to takeover routine");
       takeover(ivalue);
-    }    
+    }
   }
-  
+
   void takeover(int ivalue) {
     threadsSpawned++;
     TakeOver takeover = new TakeOver(this, ivalue, this.takeover);
   }
-        
+
 }
 
 class YFader extends Fader {
   int sy;
   int lastsy;
-  
+
   YFader(int ix, int iy, int iysize) {
     controlID = (int)random(1000);
     page = selectedPage;
@@ -986,7 +986,7 @@ class YFader extends Fader {
     }
     grid[y*8+x].on();
   }
-  
+
   void faderAction(FaderSegment sender) {
     sy = sender.y;
     float rely = sy - y;
@@ -994,7 +994,7 @@ class YFader extends Fader {
     float amount = ((rely + quantum) / (float)ysize) * 127;
     setValue(0 - ((int)amount));
   }
-  
+
   void update() {
     //if (lastsy == sy && !hasSchedule()) schedule();
     if (lastsy != sy || canUpdate()) {
@@ -1008,17 +1008,17 @@ class YFader extends Fader {
     }
     }
   }
-  
+
   void send() {
     if (channel != 0) outputChannel = channel-1;
     controlOut(x, y, value);
   }
-  
+
   void setTakeover(int itakeover) {
     //debug("setTakeover()");
     takeover = itakeover;
   }
-  
+
   void nakedSetValue(int ivalue) {
     if (TAKEOVER == false) {
       float step = 127 / (ysize-1);
@@ -1041,7 +1041,7 @@ class YFader extends Fader {
     if (lastsy != sy) update();
     propagateToChainedControls();
   }
-  
+
   void setValue(int ivalue) {
     if (takeover == 0) {
       float step = 127 / (ysize-1);
@@ -1056,7 +1056,7 @@ class YFader extends Fader {
       takeover(ivalue);
     }
   }
-  
+
   void takeover(int ivalue) {
     threadsSpawned++;
     TakeOver takeover = new TakeOver(this, ivalue, this.takeover);
@@ -1066,7 +1066,7 @@ class YFader extends Fader {
 class IYFader extends Fader {
   int sy;
   int lastsy;
-  
+
   IYFader(int ix, int iy, int iysize) {
     controlID = (int)random(1000);
     page = selectedPage;
@@ -1083,7 +1083,7 @@ class IYFader extends Fader {
     }
     grid[y*8+x].on();
   }
-  
+
   void faderAction(FaderSegment sender) {
     sy = sender.y;
     debug("!! sy="+sy);
@@ -1093,7 +1093,7 @@ class IYFader extends Fader {
     setValue(127 + ((int)amount));
     debug("!! value="+(127 + ((int)amount)));
   }
-  
+
   void update() {
     if (lastsy != sy || canUpdate()) {
 
@@ -1104,23 +1104,23 @@ class IYFader extends Fader {
         debug("i="+i+" sy="+sy+" pos="+pos);
         if (i >= pos ) { grid[(y-i)*8+x].on(); } else { grid[(y-i)*8+x].off(); }
       }
-      
+
       lastsy = sy;
       lastupdate = (new Date()).getTime();
     }
     }
   }
-  
+
   void send() {
     if (channel != 0) outputChannel = channel-1;
     controlOut(x, y, value);
   }
-  
+
   void setTakeover(int itakeover) {
     //debug("setTakeover()");
     takeover = itakeover;
   }
-  
+
   void nakedSetValue(int ivalue) {
     if (TAKEOVER == false) {
       float step = 127 / (ysize-1);
@@ -1143,7 +1143,7 @@ class IYFader extends Fader {
     if (lastsy != sy) update();
     propagateToChainedControls();
   }
-  
+
   void setValue(int ivalue) {
     if (takeover == 0) {
       float step = 127 / (ysize-1);
@@ -1158,7 +1158,7 @@ class IYFader extends Fader {
       takeover(ivalue);
     }
   }
-  
+
   void takeover(int ivalue) {
     threadsSpawned++;
     TakeOver takeover = new TakeOver(this, ivalue, this.takeover);
@@ -1167,7 +1167,7 @@ class IYFader extends Fader {
 
 class SliderSegment extends GridSegment {
   Slider owner;
-  
+
   SliderSegment(int ix, int iy, Slider iowner) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -1179,36 +1179,36 @@ class SliderSegment extends GridSegment {
     activecolor = SLIDERACTIVECOLOR;
     off();
   }
-  
+
   void down() {
     owner.sliderAction(this);
   }
-  
+
   void up() {
     owner.liftFinger(this);
   }
-  
+
   void update() {
     off();
   }
-  
+
   void send() {
     if (x == owner.x && y == owner.y) {
       owner.send();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     if (x == owner.x && y == owner.y) {
       owner.setValue(ivalue);
     }
   }
-  
+
   void chainTo(Control control, boolean send) {
     owner.chainTo(control, send);
   }
-  
+
   void propagateToChainedControls() {
     owner.propagateToChainedControls();
   }
@@ -1216,15 +1216,15 @@ class SliderSegment extends GridSegment {
 
 class Slider extends Control {
   SliderSegment[] segments;
-  
+
   void sliderAction(SliderSegment sender){}
   void liftFinger(SliderSegment sender){};
-  
+
   void send() {
     if (channel != 0) outputChannel = channel-1;
     controlOut(x, y, value);
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     value = ivalue;
@@ -1236,7 +1236,7 @@ class XSlider extends Slider {
   int lastSegment;
   int segment;
   int granularity;
-  
+
   XSlider(int ix, int iy, int ixsize, int igranularity) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -1250,7 +1250,7 @@ class XSlider extends Slider {
       segments[i] = new SliderSegment(x+i, y, this);
     }
   }
-  
+
   void sliderAction(SliderSegment sender) {
     segment = sender.x;
     if (lastSegment - 1 == segment) {
@@ -1264,11 +1264,11 @@ class XSlider extends Slider {
     sender.on();
     lastSegment = segment;
   }
-  
+
   void liftFinger(SliderSegment sender) {
     sender.off();
   }
-  
+
   void increase() {
     if (value < 127) {
       value += granularity;
@@ -1279,7 +1279,7 @@ class XSlider extends Slider {
     send();
     propagateToChainedControls();
   }
-  
+
   void decrease() {
     if (value > 0) {
       value -= granularity;
@@ -1296,7 +1296,7 @@ class YSlider extends Slider {
   int lastSegment;
   int segment;
   int granularity;
-  
+
   YSlider(int ix, int iy, int iysize, int igranularity) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -1310,7 +1310,7 @@ class YSlider extends Slider {
       segments[i] = new SliderSegment(x, y - i, this);
     }
   }
-  
+
   void sliderAction(SliderSegment sender) {
     segment = sender.y;
     if (lastSegment - 1 == segment) {
@@ -1322,11 +1322,11 @@ class YSlider extends Slider {
     sender.on();
     lastSegment = segment;
   }
-  
+
   void liftFinger(SliderSegment sender) {
     sender.off();
   }
-  
+
   void increase() {
     if (value < 127) {
       value += granularity;
@@ -1337,7 +1337,7 @@ class YSlider extends Slider {
     send();
     propagateToChainedControls();
   }
-  
+
   void decrease() {
     if (value > 0) {
       value -= granularity;
@@ -1352,7 +1352,7 @@ class YSlider extends Slider {
 
 class PadSegment extends GridSegment {
   Pad owner;
-  
+
   PadSegment(int ix, int iy, Pad iowner) {
     x = ix;
     y = iy;
@@ -1362,15 +1362,15 @@ class PadSegment extends GridSegment {
     activecolor = PADONCOLOR;
     off();
   }
-  
+
   void down() {
     owner.padAction(this);
   }
-  
+
   void update() {
     owner.update(this);
   }
-  
+
   void send() {
     if (x == owner.x && y == owner.y) {
       owner.sendX();
@@ -1379,7 +1379,7 @@ class PadSegment extends GridSegment {
       owner.sendY();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     if (x == owner.x && y == owner.y) {
@@ -1389,11 +1389,11 @@ class PadSegment extends GridSegment {
       owner.nakedSetValueY(ivalue);
     }
   }
-  
+
   void chainTo(Control control, boolean send) {
     owner.chainTo(control, send);
   }
-  
+
   void propagateToChainedControls() {
     owner.propagateToChainedControls();
   }
@@ -1412,7 +1412,7 @@ class Pad extends Control {
   boolean TAKEOVER;
   long threadsSpawned = 0;
   long threadsFinished = 0;
-  
+
   Pad(int ix, int iy, int ixsize, int iysize) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -1428,14 +1428,14 @@ class Pad extends Control {
     lastsx = x;
     lastsy = y+ysize-1;
     padSegments = new PadSegment[xsize*ysize];
-    
+
     for (int yi = 0; yi < ysize; yi++) {
       for (int xi = 0; xi < xsize; xi++) {
         padSegments[yi*ysize+xi] = new PadSegment(xi+x, yi+y, this);
       }
     }
   }
-  
+
   void padAction(PadSegment sender) {
     //debug("padAction()");
     sy = sender.y;
@@ -1448,37 +1448,37 @@ class Pad extends Control {
     float amountx = ((relx + quantum) / (float)xsize) * 127;
     setValue((int)amountx, (int)amounty);
   }
-  
+
   void send() {
     sendX();
     sendY();
   }
-  
+
   void sendX() {
     if (channel != 0) outputChannel = channel-1;
     if (!invertx) controlOut(x, y, xvalue);
     if (invertx) controlOut(x, y, 127-xvalue);
   }
-  
+
   void sendY() {
     if (channel != 0) outputChannel = channel-1;
     if (!inverty) controlOut(x+1, y, yvalue);
     if (inverty) controlOut(x+1, y, 127-yvalue);
 
   }
-  
+
   void setTakeover(int takeover) {
     this.takeover = takeover;
   }
-  
+
   void invertx() {
     invertx = true;
   }
-  
+
   void inverty() {
     inverty = true;
   }
-  
+
   void nakedSetValueX(int ivalue) {
     if (invertx) ivalue = 127-ivalue;
     if (TAKEOVER == false) {
@@ -1491,7 +1491,7 @@ class Pad extends Control {
       //debug("nakedSetValueX() blocked because takeover is in progress.");
     }
   }
-  
+
   void nakedSetValueY(int ivalue) {
     if (inverty) ivalue = 127-ivalue;
     if (TAKEOVER == false) {
@@ -1505,13 +1505,13 @@ class Pad extends Control {
       //debug("nakedSetValueY() blocked because takeover is in progress.");
     }
   }
-  
+
   void takeoverSetValue(int ixvalue, int iyvalue) {
     float step = 127 / (ysize-1);
       int rely = ((int)(iyvalue / step));
       sy = (ysize-1)+(y - rely);
       yvalue = iyvalue;
-      
+
       step = 127 / (xsize-1);
       sx = x+(int)(ixvalue / step);
       xvalue = ixvalue;
@@ -1521,14 +1521,14 @@ class Pad extends Control {
       if (lastsy != sy || lastsx != sx) update();
       propagateToChainedControls();
   }
-  
+
   void setValue(int ixvalue, int iyvalue) {
     if (takeover == 0) {
       float step = 127 / (ysize-1);
       int rely = ((int)(iyvalue / step));
       sy = (ysize-1)+(y - rely);
       yvalue = iyvalue;
-      
+
       step = 127 / (xsize-1);
       sx = x+(int)(ixvalue / step);
       xvalue = ixvalue;
@@ -1542,12 +1542,12 @@ class Pad extends Control {
       takeover(ixvalue, iyvalue);
     }
   }
-  
+
   void takeover(int ixvalue, int iyvalue) {
       threadsSpawned++;
       TakeOver2d takeover = new TakeOver2d(this, ixvalue, iyvalue, this.takeover);
   }
-  
+
   void update() {
     if (page == selectedPage) {
       //debug("update() sx="+sx+" sy="+sy);
@@ -1557,7 +1557,7 @@ class Pad extends Control {
       lastsy = sy;
     }
   }
-  
+
   void update(PadSegment sender) {
     //debug("update("+sender+") sx="+sx+" sy="+sy);
     if ((sender.x == x && sender.y == y) || (sender.x-1 == x && sender.y == y)) {
@@ -1569,7 +1569,7 @@ class Pad extends Control {
         lastsx = sx;
         lastsy = sy;
       }
-      
+
     } else {
       //debug("not the case");
       if (sender.x == sx && sender.y == sy) sender.on();
@@ -1577,12 +1577,12 @@ class Pad extends Control {
     }
     /*lastsx = sx;
     lastsy = sy;*/
-    
+
   }
 }
 
 class Drumrack extends Control {
-  
+
   Drumrack(int ix, int iy, int ixsize, int iysize, int startOctave, String startNote, int vel, boolean invert) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -1591,9 +1591,9 @@ class Drumrack extends Control {
     xsize = ixsize;
     ysize = iysize;
     Note note;
-    
+
     int snote = addOctave(parseNote(startNote), startOctave);
-    
+
     if (invert) {
       for (int yi = 0; yi < ysize; yi++) {
         for (int xi = 0; xi < xsize; xi++) {
@@ -1610,7 +1610,7 @@ class Drumrack extends Control {
       }
     }
   }
-  
+
   int parseNote(String note) {
     note = note.toLowerCase();
     if (note.equals("c")) return 0;
@@ -1627,17 +1627,17 @@ class Drumrack extends Control {
     if (note.equals("b")) return 11;
     return 0;
   }
-  
+
   int addOctave(int note, int octave) {
     octave = octave+1;
     return note+(octave*12);
   }
-  
+
 }
 
 class MeterSegment extends GridSegment {
   Meter owner;
-  
+
   MeterSegment(int ix, int iy, Meter iowner) {
     page = selectedPage;
     x = ix;
@@ -1649,24 +1649,24 @@ class MeterSegment extends GridSegment {
     activecolor = METERACTIVECOLOR;
     off();
   }
-  
+
   void update() {
     if (x == owner.x && y == owner.y) {
       owner.update();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     if (x == owner.x && y == owner.y) {
       owner.nakedSetValue(ivalue);
     }
   }
-  
+
   void chainTo(Control control, boolean send) {
     owner.chainTo(control, send);
   }
-  
+
   void propagateToChainedControls() {
     owner.propagateToChainedControls();
   }
@@ -1675,7 +1675,7 @@ class MeterSegment extends GridSegment {
 class Meter extends Control {
   MeterSegment[] segments;
   long lastupdate;
-  
+
   boolean canUpdate() {
     long now = (new Date()).getTime();
     if (now - lastupdate > updatedelay) {
@@ -1683,7 +1683,7 @@ class Meter extends Control {
      return true;
     } else {
      return false;
-    } 
+    }
   }
 }
 
@@ -1708,45 +1708,45 @@ class XMeter extends Meter {
     }
     grid[y*8+x].on();
   }
-    
+
   void update() {
-    
+
     if (canUpdate()) {
       //debug("go");
-    if (page == selectedPage) { 
+    if (page == selectedPage) {
       for(int i = 0; i < xsize; i++) {
-        
+
         if (i != sx && i != sx+1) {
           grid[y*8+x+i].off();
         }
-        
+
         if (i == sx+1 && !(sxf - sx >= 0.56) && !(((sxf - sx) > 0.43 && (sxf - sx) < 0.56) && sx != xsize-1)) {
           grid[y*8+x+i].off();
         }
-        
-        if (i == sx) { 
+
+        if (i == sx) {
           if (sxf - sx <= 0.43) {
             grid[y*8+x+i].on();
           }
-          
+
           if (sxf - sx >= 0.56) {
             grid[y*8+x+(i+1)].on();
           }
-          
+
           if (((sxf - sx) > 0.43 && (sxf - sx) < 0.56) && sx != xsize-1) {
             grid[y*8+x+i].on();
             grid[y*8+x+i+1].on();
           }
         }
-        
+
       }
       lastsx = sx;
       lastsxf = sxf;
     }
     } else { /*debug("filtered");*/ }
   }
-  
-  
+
+
   void nakedSetValue(int ivalue) {
       float step = 127 / (xsize-1);
       sxf = (ivalue / step);
@@ -1755,8 +1755,8 @@ class XMeter extends Meter {
       value = ivalue;
       propagateToChainedControls();
   }
-  
-  
+
+
   void setValue(int ivalue) {
       float step = 127 / (xsize-1);
       sxf = (ivalue / step);
@@ -1766,9 +1766,9 @@ class XMeter extends Meter {
       send();
       if (lastsxf != sxf) update();
       propagateToChainedControls();
-   
+
   }
-        
+
 }
 
 class YMeter extends Meter {
@@ -1776,7 +1776,7 @@ class YMeter extends Meter {
   int lastsy;
   float syf;
   float lastsyf;
-  
+
   YMeter(int ix, int iy, int iysize) {
     controlID = (int)random(1000);
     page = selectedPage;
@@ -1793,50 +1793,50 @@ class YMeter extends Meter {
     }
     grid[y*8+x].on();
   }
-  
+
   void update() {
     //debug("diff: "+abs((lastsy-lastsyf) - (sy-syf)));
 
-    if (page == selectedPage && canUpdate()) { 
+    if (page == selectedPage && canUpdate()) {
       for(int i = y; i >= y-(ysize-1); i--) {
         if (i != sy && i != sy-1) {
           grid[i*8+x].off();
           //debug("turning off 0");
         }
-        
+
         if (i == sy-1 && !(sy - syf >= 0.56) && !(((sy - syf) > 0.43 && (syf - sy) < 0.56))) {
           grid[(i)*8+x].off();
         }
-        
-        
-        if (i == sy) { 
+
+
+        if (i == sy) {
           if (sy - syf <= 0.43) {
             grid[i*8+x].on();
             //debug("turning on 0");
           }
-          
+
           if (sy - syf >= 0.56) {
             grid[(i-1)*8+x].on();
             //debug("turning on -1");
           }
-          
+
           if (((sy - syf) > 0.43 && (syf - sy) < 0.56) && sy != y-ysize-1) {
             grid[i*8+x].on();
             grid[(i-1)*8+x].on();
             //debug("turning on both");
           }
         }
-        
+
       }
-      
+
       lastsy = sy;
       lastsyf = syf;
     }
 
   }
-  
-  
-  
+
+
+
   void nakedSetValue(int ivalue) {
       float step = 127 / (ysize-1);
       int rely = ((int)(ivalue / step));
@@ -1846,7 +1846,7 @@ class YMeter extends Meter {
       value = ivalue;
       propagateToChainedControls();
   }
-  
+
   void setValue(int ivalue) {
       float step = 127 / (ysize-1);
       int rely = ((int)(ivalue / step));
@@ -1862,7 +1862,7 @@ class YMeter extends Meter {
 
 class ProgressSegment extends GridSegment {
   Progress owner;
-  
+
   ProgressSegment(int ix, int iy, Progress iowner) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -1875,27 +1875,27 @@ class ProgressSegment extends GridSegment {
     activecolor = PROGRESSACTIVECOLOR;
     off();
   }
-  
-  
+
+
   void update() {
     if (x == owner.x && y == owner.y) {
       owner.update();
     }
   }
-  
 
-  
+
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     if (x == owner.x && y == owner.y) {
       owner.nakedSetValue(ivalue);
     }
   }
-  
+
   void chainTo(Control control, boolean send) {
     owner.chainTo(control, send);
   }
-  
+
   void propagateToChainedControls() {
     owner.propagateToChainedControls();
   }
@@ -1904,7 +1904,7 @@ class ProgressSegment extends GridSegment {
 class Progress extends Control {
   ProgressSegment[] segments;
   long lastupdate;
-  
+
   boolean canUpdate() {
     long now = (new Date()).getTime();
     if (now - lastupdate > updatedelay) {
@@ -1912,7 +1912,7 @@ class Progress extends Control {
      return true;
     } else {
      return false;
-    } 
+    }
   }
 }
 
@@ -1938,7 +1938,7 @@ class XProgress extends Progress {
 
   void update() {
     //if (lastsx != sx) {
-    if (page == selectedPage && canUpdate()) {    
+    if (page == selectedPage && canUpdate()) {
       for(int i = 0; i < xsize; i++) {
         if (i <= sx) { grid[y*8+x+i].on(); } else { grid[y*8+x+i].off(); }
       }
@@ -1946,29 +1946,29 @@ class XProgress extends Progress {
     }
     //}
   }
-  
+
   void nakedSetValue(int ivalue) {
       float step = 127 / (xsize-1);
       sx = (int)(ivalue / step);
       value = ivalue;
       propagateToChainedControls();
   }
-  
-  
+
+
   void setValue(int ivalue) {
       float step = 127 / (xsize-1);
       sx = (int)(ivalue / step);
       value = ivalue;
       send();
       if (lastsx != sx) update();
-      propagateToChainedControls();    
-  }   
+      propagateToChainedControls();
+  }
 }
 
 class YProgress extends Progress {
   int sy;
   int lastsy;
-  
+
   YProgress(int ix, int iy, int iysize) {
     controlID = (int)random(1000);
     page = selectedPage;
@@ -1985,7 +1985,7 @@ class YProgress extends Progress {
     }
     grid[y*8+x].on();
   }
-  
+
   void update() {
     //if (lastsy != sy) {
     if (page == selectedPage && canUpdate()) {
@@ -1996,7 +1996,7 @@ class YProgress extends Progress {
     }
     //}
   }
-  
+
   void nakedSetValue(int ivalue) {
       float step = 127 / (ysize-1);
       int rely = ((int)(ivalue / step));
@@ -2004,7 +2004,7 @@ class YProgress extends Progress {
       value = ivalue;
       propagateToChainedControls();
   }
-  
+
   void setValue(int ivalue) {
       float step = 127 / (ysize-1);
       int rely = ((int)(ivalue / step));
@@ -2019,7 +2019,7 @@ class YProgress extends Progress {
 
 class CrsFaderSegment extends GridSegment {
   CrsFader owner;
-  
+
   CrsFaderSegment(int ix, int iy, CrsFader iowner) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -2032,38 +2032,38 @@ class CrsFaderSegment extends GridSegment {
     activecolor = FADERACTIVECOLOR;
     off();
   }
-  
+
   void down() {
     owner.faderAction(this);
   }
-  
+
   void up() {
     owner.stopAction();
   }
-  
+
   void update() {
     if (x == owner.x && y == owner.y) {
       owner.update();
     }
   }
-  
+
   void send() {
     if (x == owner.x && y == owner.y) {
       owner.send();
     }
   }
-  
+
   void nakedSetValue(int ivalue) { setValue(ivalue); }
   void setValue(int ivalue) {
     if (x == owner.x && y == owner.y) {
       owner.nakedSetValue(ivalue);
     }
   }
-  
+
   void chainTo(Control control, boolean send) {
     owner.chainTo(control, send);
   }
-  
+
   void propagateToChainedControls() {
     owner.propagateToChainedControls();
   }
@@ -2078,7 +2078,7 @@ class CrsFader extends Control {
   boolean running;
   CrsFaderSegment[] segments;
   long lastupdate;
-  
+
   CrsFader(int ix, int iy, int ixsize) {
     page = selectedPage;
     //println(this+" on page "+page);
@@ -2096,34 +2096,34 @@ class CrsFader extends Control {
     }
     grid[y*8+x].on();
   }
-  
+
   void stopAction() {
     running = false;
     factor = 0;
   }
-  
+
   void faderAction(CrsFaderSegment sender) {
     if (xsize % 2 != 0) {
       int relx = sender.x - x + 1;
       int center = abs(round(((float)xsize/2)));
       float relpos = ((relx - center)/((float)xsize-1))*2;
-      
+
       debug("CrsFader update. Sender x = "+sender.x+", relx="+relx);
       debug("Relative position: "+relpos+", center="+center);
     } else {
       int relx = sender.x - x + 1;
       int center = xsize/2;
       float relpos = 0;
-      
+
       if (relx <= center) {
         relpos = (center - (relx-1))/(float)center * -1;
       } else {
         relpos = (relx - center)/(float)center;
       }
-      
+
       debug("CrsFader update. Sender x = "+sender.x+", relx="+relx);
       debug("Relative position: "+relpos+", center="+center);
-      
+
       factor = relpos;
       if (factor != 0 && !running) {
         running = true;
@@ -2131,18 +2131,18 @@ class CrsFader extends Control {
       }
     }
   }
-  
+
   void spawnThread() {
     CrsUpdater updater = new CrsUpdater(this);
   }
-  
+
   void updateValue() {
     int nvalue = (int)(value+(factor*6));
     if (nvalue < 0) nvalue = 0;
     if (nvalue > 127) nvalue = 127;
     setValue(nvalue);
   }
-  
+
   boolean canUpdate() {
     long now = (new Date()).getTime();
     if (now - lastupdate > updatedelay) {
@@ -2150,47 +2150,47 @@ class CrsFader extends Control {
      return true;
     } else {
      return false;
-    } 
+    }
   }
-    
+
   void update() {
-    
+
     if (canUpdate()) {
       //debug("go");
-    if (page == selectedPage) { 
+    if (page == selectedPage) {
       for(int i = 0; i < xsize; i++) {
-        
+
         if (i != sx && i != sx+1) {
           grid[y*8+x+i].off();
         }
-        
+
         if (i == sx+1 && !(sxf - sx >= 0.56) && !(((sxf - sx) > 0.43 && (sxf - sx) < 0.56) && sx != xsize-1)) {
           grid[y*8+x+i].off();
         }
-        
-        if (i == sx) { 
+
+        if (i == sx) {
           if (sxf - sx <= 0.43) {
             grid[y*8+x+i].on();
           }
-          
+
           if (sxf - sx >= 0.56) {
             grid[y*8+x+(i+1)].on();
           }
-          
+
           if (((sxf - sx) > 0.43 && (sxf - sx) < 0.56) && sx != xsize-1) {
             grid[y*8+x+i].on();
             grid[y*8+x+i+1].on();
           }
         }
-        
+
       }
       lastsx = sx;
       lastsxf = sxf;
     }
     } else { /*debug("filtered");*/ }
   }
-  
-  
+
+
   void nakedSetValue(int ivalue) {
     if (!running) {
       float step = 127 / (xsize-1);
@@ -2203,8 +2203,8 @@ class CrsFader extends Control {
       debug("Blocked because thread is running");
     }
   }
-  
-  
+
+
   void setValue(int ivalue) {
       float step = 127 / (xsize-1);
       sxf = (ivalue / step);
@@ -2215,10 +2215,10 @@ class CrsFader extends Control {
       if (lastsxf != sxf) update();
       propagateToChainedControls();
   }
-  
+
   void send() {
     controlOut(x, y, value);
   }
-        
+
 }
 

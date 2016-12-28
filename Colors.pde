@@ -122,7 +122,7 @@ int parseColor(String input) {
   if (input.equals("yellow")) { scolor = YELLOW; }
   if (input.equals("greenlow")) { scolor = GREENL; }
   if (input.equals("green")) { scolor = GREEN; }
-  
+
   if (input.equals("blue")) { scolor = BLUE; }
   if (input.equals("bluelow")) { scolor = BLUEL ; }
   if (input.equals("cyan")) { scolor = CYAN; }
@@ -131,7 +131,7 @@ int parseColor(String input) {
   if (input.equals("magentalow")) { scolor = MAGENTAL; }
   if (input.equals("white")) { scolor = WHITE; }
   if (input.equals("whitelow")) { scolor = WHITEL ; }
-  
+
   if (input.equals("redflash")) { scolor = REDF; }
   if (input.equals("amberflash")) { scolor = AMBERF; }
   if (input.equals("yellowflash")) { scolor = YELLOWF; }

@@ -41,7 +41,7 @@ void demos() {
   if (demo == 0) randomOnOff();
   if (demo == 1) ylines();
   if (demo == 2) xlines();
-  if (demo == 3) xylines(); 
+  if (demo == 3) xylines();
   if (demo == 4) xlinesn();
   if (demo == 5) ylinesn();
   if (demo == 6) scroller();
@@ -59,7 +59,7 @@ void overrideBitmap(int line, String data) {
   for (int i = 0; i < data.length(); i++) {
     if (i < ml) bitmap[i][line] = data.substring(i, 1+i).equals("#");
   }
-  
+
   /*println("Bitmap:");
     for (int y = 0; y < 6; y++) {
       print("\n");
@@ -101,7 +101,7 @@ void scrollerSetup() {
     letters[24] = "#000#00#0#0000#0000#0#00#000#0#000#0";
     letters[25] = "#000#00#0#0000#00000#00000#00000#000";
     letters[26] = "#####00000#000##000#0000#00000#####0";
-    
+
     totalrows = msg.length()*6;
     bitmap = new boolean[totalrows+8][7];
     for (int i = 0; i < msg.length(); i++) {

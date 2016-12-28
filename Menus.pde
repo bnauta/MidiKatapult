@@ -101,7 +101,7 @@ void menus() {
             menustate = "saveconfig";
             mselection = 0;
           }
-          
+
           } else if (lpdetect && menustate.equals("saveconfig")) {
           if (mselection != MFINAL && !DEVICECONFIG) {
             fill(#FFFFFF);
@@ -131,7 +131,7 @@ void menus() {
             background(0);
             initMidiSystem();
           }
-          
+
         } else if (!lpdetect) {
           fill(#FFFFFF);
           textFont(f18, 18);

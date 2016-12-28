@@ -33,9 +33,9 @@ void reloadLayouts() {
       if (grids[igrid][icontrol] != null) grids[igrid][icontrol] = null;
     }
   }
-  
+
   defaultColors();
-      
+
   grid = new Control[72];
   grids = new Control[64][72];
   numberOfPages = 0;
@@ -43,7 +43,7 @@ void reloadLayouts() {
   pagenames = new String[16];
   pagename = "";
   takeoverPool = new Control[512];
-  
+
   displaystate = true;
   clearDisplay();
   displaystate = false;
@@ -66,7 +66,7 @@ void loadLayout(int targetPage) {
     for (int i = 0; i < grid.length; i++) {
       grids[currentPage][i] = grid[i];
     }
-    
+
     // Destroy active grid
     //debug("Destroying active grid ");
     for (int i = 0; i < grid.length; i++) {
@@ -75,7 +75,7 @@ void loadLayout(int targetPage) {
       }
     }
     clearDisplay();
-    
+
     for (int i = 0; i < numberOfPages; i++) {
       new PageButton(pageNumbers[i]-1);
     }
@@ -87,7 +87,7 @@ void loadLayout(int targetPage) {
       }
     }
     clearDisplay();
-    
+
     if (grids[selectedPage][64] != null) {
       // If chosen grid is in buffer, restore it
       //debug("Restoring from buffer ");
@@ -110,15 +110,15 @@ void loadLayout(int targetPage) {
         try {
         String[] entry = split(layout[i], " ");
         String type = entry[0];
-        
+
 /*        if (type.equals("global")) {
           int global = Integer.parseInt(entry[1]);
           i++;
           entry = split(layout[i], " ");
-          
+
         }*/
-        
-        if (type.equals("page")) { 
+
+        if (type.equals("page")) {
           page = Integer.parseInt(entry[1]);
           if (page == 1) customChannel = 0;
           if (page == 16) customChannel = 16;
@@ -134,10 +134,10 @@ void loadLayout(int targetPage) {
           }
           if (page == targetPage) { loadPage = true; } else { loadPage = false; }
         }
-        
+
         if (loadPage == true) {
           Control lastControl = null;
-          
+
           if (type.equals("oncolor")) {
             int scolor = parseColor(entry[1]);
             setOnColors(scolor);
@@ -156,7 +156,7 @@ void loadLayout(int targetPage) {
             Button button = new Button(Integer.parseInt(entry[1]), Integer.parseInt(entry[2]), btype);
             if (entry.length >= 5) {
               if (entry[4].equals("persistent")) { button.persistence = true; }
-              
+
               String[] velArg = split(entry[4], "=");
               debug("Entry: "+entry[4]);
               if (velArg[0].equals("velocity")) {
@@ -297,7 +297,7 @@ void loadLayout(int targetPage) {
               if (split(entry[ii+4], "=")[0].equals("inverty") && split(entry[ii+4], "=")[1].equals("yes") ) pad.inverty();
             }
           }
-          
+
           if (lastControl != null && customInit != 0) {
             lastControl.nakedSetValue(customInit);
           }
@@ -311,9 +311,9 @@ void loadLayout(int targetPage) {
             println("Layout syntax error at: "+layout[i]+"\n"+e);
         }
       }
-      
+
       new PageButton(64);
-      
+
       for (int i = 0; i < 64; i++) {
         if (grid[i] != null) grid[i].page = selectedPage;
       }
