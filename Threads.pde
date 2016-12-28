@@ -40,7 +40,7 @@ class CrsUpdater implements Runnable {
     target.running = true;
     try {
       console("Updater thread spawned: "+this);
-      while (target.factor != 0) {
+      while (target.factor != 0 || target.centering) {
         target.updateValue();
         Thread.sleep(25);
       }

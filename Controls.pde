@@ -17,6 +17,7 @@ class Control {
   int softwarevalue;
   boolean persistence;
   boolean sn;
+  int crsfaderMultiplier = 6;
   int timeout;
   int idlecolor;
   int activecolor;
@@ -2079,8 +2080,10 @@ class CrsFader extends Control {
   float lastsxf;
   float factor;
   boolean running;
+  boolean centering;
   CrsFaderSegment[] segments;
   long lastupdate;
+  float fvalue; // store `value` as float alongside the integer. Decimals in Integer calculations are truncated, resulting in `value` dropping too quickly on descent (i.e. 127 - 1.5 = 125)
 
   CrsFader(int ix, int iy, int ixsize) {
     page = selectedPage;
@@ -2092,7 +2095,9 @@ class CrsFader extends Control {
     lastsx = -1;
     takeover = 0;
     factor = 0;
+    fvalue = (float)value;
     running = false;
+    centering = false;
     segments = new CrsFaderSegment[xsize];
     for (int i = 0; i < xsize; i++) {
       segments[i] = new CrsFaderSegment(x+i, y, this);
@@ -2102,36 +2107,28 @@ class CrsFader extends Control {
 
   void stopAction() {
     running = false;
+    centering = false;
     factor = 0;
   }
 
   void faderAction(CrsFaderSegment sender) {
-    if (xsize % 2 != 0) {
-      int relx = sender.x - x + 1;
-      int center = abs(round(((float)xsize/2)));
-      float relpos = ((relx - center)/((float)xsize-1))*2;
+    int relx = sender.x - x + 1;
+    float center = (float)(xsize + 1) / 2;
+    float relpos = 0.0;
 
-      console("CrsFader update. Sender x = "+sender.x+", relx="+relx);
-      console("Relative position: "+relpos+", center="+center);
+    if (relx != center) {
+      relpos = (relx - center)/(float)center * crsfaderMultiplier;
     } else {
-      int relx = sender.x - x + 1;
-      int center = xsize/2;
-      float relpos = 0;
+      centering = true;
+    }
 
-      if (relx <= center) {
-        relpos = (center - (relx-1))/(float)center * -1;
-      } else {
-        relpos = (relx - center)/(float)center;
-      }
+    console("CrsFader update. Sender x = "+sender.x+", relx="+relx);
+    console("Relative position: "+relpos+", center="+center);
 
-      console("CrsFader update. Sender x = "+sender.x+", relx="+relx);
-      console("Relative position: "+relpos+", center="+center);
-
-      factor = relpos;
-      if (factor != 0 && !running) {
-        running = true;
-        spawnThread();
-      }
+    factor = relpos;
+    if ((factor != 0 || centering) && !running) {
+      running = true;
+      spawnThread();
     }
   }
 
@@ -2140,10 +2137,20 @@ class CrsFader extends Control {
   }
 
   void updateValue() {
-    int nvalue = (int)(value+(factor*6));
-    if (nvalue < 0) nvalue = 0;
-    if (nvalue > 127) nvalue = 127;
-    setValue(nvalue);
+    float nvalue = fvalue; // use float `value`
+
+    if (centering) {
+      // if centering flag is raised, jump to center
+      if (fvalue > 63.0) nvalue = max(fvalue - 63.0, fvalue - crsfaderMultiplier);
+      if (fvalue < 63.0) nvalue = min(fvalue + (63.0 - fvalue), fvalue + crsfaderMultiplier);
+    } else {
+      nvalue = (fvalue+factor);
+      if (nvalue < 0) nvalue = 0.0;
+      if (nvalue > 127) nvalue = 127.0;
+    }
+
+    fvalue = nvalue;
+    setValue((int)nvalue);
   }
 
   boolean canUpdate() {
@@ -2201,6 +2208,7 @@ class CrsFader extends Control {
       //println(sxf);
       sx = (int)sxf;
       value = ivalue;
+      fvalue = (float)ivalue;
       propagateToChainedControls();
     } else {
       console("Blocked because thread is running");
