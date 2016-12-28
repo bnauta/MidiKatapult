@@ -6,7 +6,7 @@ static String UNLICENSED = "Unlicensed";
 class License extends Object {
   int demotime = 1800;
   long sessionT;
-  String[] licenseKey;
+  String licenseKey;
   protected boolean valid = false;
   MessageDigest md;
 
@@ -14,13 +14,13 @@ class License extends Object {
     sessionT = (new Date()).getTime();
     dpr = "";
     if (DEBUG) dpr = "/Users/markqvist/Documents/Processing/midikatapult/";
-    licenseKey = loadStrings(dpr+"license.txt");
+    licenseKey = "441592-95-10047-5195855-201276056-95-97-120-57-49";
     try {
       //println("License test running...");
       md = MessageDigest.getInstance("MD5");
 
-      String[] components = split(licenseKey[0], "-");
-      String id = licenseKey[0].substring(0, 6);
+      String[] components = split(licenseKey, "-");
+      String id = licenseKey.substring(0, 6);
       String checksum = components[1];
       //println("id: "+id);
       //println("checksum: "+checksum);
@@ -34,9 +34,9 @@ class License extends Object {
       }
       gens = id + gens;
       //println();
-      //println("F:"+licenseKey[0]);
+      //println("F:"+licenseKey);
       //println("G:"+gens);        // REMOVE!!!
-      if (licenseKey[0].equals(gens)) {
+      if (licenseKey.equals(gens)) {
         valid = true;
         UNLICENSED = "";
       }
