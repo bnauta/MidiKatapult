@@ -3,6 +3,10 @@ boolean lpdetect = false;
 boolean allgood = false;
 int delay;
 
+void settings() {
+  size(WINDOWSIZE, WINDOWSIZE);
+}
+
 void setup(){
   loadConfig();
   setupDemos();
@@ -12,7 +16,6 @@ void setup(){
   f18 = loadFont("18.vlw");
   f20 = loadFont("20.vlw");
   f40 = loadFont("40.vlw");
-  size(WINDOWSIZE, WINDOWSIZE);
   background(0);
   frameRate(FRAMERATE);
   launchpad = new MIDI("Launchpad");
