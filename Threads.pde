@@ -39,7 +39,7 @@ class CrsUpdater implements Runnable {
   public void run() {
     target.running = true;
     try {
-      debug("Updater thread spawned: "+this);
+      console("Updater thread spawned: "+this);
       while (target.factor != 0) {
         target.updateValue();
         thread.sleep(25);
@@ -48,7 +48,7 @@ class CrsUpdater implements Runnable {
 
     }
     target.running = false;
-    debug("Updater thread died: "+this);
+    console("Updater thread died: "+this);
   }
 }
 
@@ -76,7 +76,7 @@ class TakeOver implements Runnable {
   }
 
   void cleanUpThreads() {
-    //debug("CLEANUP METHOD CALLED______________________________");
+    //console("CLEANUP METHOD CALLED______________________________");
     target.threadsFinished++;
     exits = true;
   }
@@ -90,7 +90,7 @@ class TakeOver implements Runnable {
     probeValues[0] = -1;
 
     try {
-      //debug("\n\nThread "+target+" running.\ntn="+threadnumber+"\ntf="+target.threadsFinished);
+      //console("\n\nThread "+target+" running.\ntn="+threadnumber+"\ntf="+target.threadsFinished);
       if (target.threadsFinished >= target.threadsSpawned) target.threadsFinished = threadnumber - 1;
 
       if (!(target.threadsFinished == threadnumber - 1)) wait = true;
@@ -102,12 +102,12 @@ class TakeOver implements Runnable {
           probeCount--; if (probeCount == -1) probeCount = 3;
           if (waitTime > 45 && probeValues[0] == probeValues[1] && probeValues[1] == probeValues[2] && probeValues[2] == probeValues[3]) cleanUpThreads();
 
-          //debug(target+" sleeping. tn "+threadnumber+" tf "+target.threadsFinished);
+          //console(target+" sleeping. tn "+threadnumber+" tf "+target.threadsFinished);
           if (!(target.threadsFinished == threadnumber - 1)) { wait = true; } else { wait = false; }
           if (exits) wait = false;
       }
 
-      //debug(target+" got past que wait");
+      //console(target+" got past que wait");
 
       thread.sleep(25);
 
@@ -117,18 +117,18 @@ class TakeOver implements Runnable {
       target.TAKEOVER = true;
 
       if (!(exits)) {
-        //debug(target+" starting takeover. targetValue="+targetValue+" mvalue="+mvalue);
+        //console(target+" starting takeover. targetValue="+targetValue+" mvalue="+mvalue);
 
         if (initialmvalue < targetValue) {
           for (int i = 0; i < targetValue-initialmvalue; i++) {
           //while (mvalue < targetValue && target.page == selectedPage) {
-            //debug(target+" in takeover. mvalue="+mvalue);
+            //console(target+" in takeover. mvalue="+mvalue);
             mvalue += 1;
-            //debug(target+" waiting for "+takeover+" mills");
+            //console(target+" waiting for "+takeover+" mills");
             //try {
               thread.sleep(takeover);
             //} catch (Exception e) {
-            //  debug("Exception while sleeping "+target+":\n"+e);
+            //  console("Exception while sleeping "+target+":\n"+e);
             //}
             target.takeoverSetValue(mvalue);
           //}
@@ -138,35 +138,35 @@ class TakeOver implements Runnable {
         if (initialmvalue > targetValue && target.page == selectedPage) {
           for (int i = 0; i < initialmvalue-targetValue; i++) {
           //while (mvalue > targetValue) {
-            //debug(target+" in takeover. mvalue="+mvalue);
+            //console(target+" in takeover. mvalue="+mvalue);
             mvalue -= 1;
-            //debug(target+" waiting for "+takeover+" mills");
+            //console(target+" waiting for "+takeover+" mills");
             //try {
               thread.sleep(takeover);
             //} catch (Exception e) {
-            //  debug("Exception while sleeping "+target+":\n"+e);
+            //  console("Exception while sleeping "+target+":\n"+e);
             //}
             target.takeoverSetValue(mvalue);
           //}
           }
         }
-        //debug(target+" takeover finished");
+        //console(target+" takeover finished");
       } else {
-        //debug("Closing hanging thread "+thread);
+        //console("Closing hanging thread "+thread);
       }
       target.threadsFinished++;
-      //debug(target+" sleeping for cleanup");
+      //console(target+" sleeping for cleanup");
       //try {
         thread.sleep(1000);
       //} catch (Exception e) {
-      //  debug("Exception while sleeping "+target+":\n"+e);
+      //  console("Exception while sleeping "+target+":\n"+e);
       //}
       if (target.threadsFinished == target.threadsSpawned) target.TAKEOVER = false;
-      //debug(target+" terminating");
+      //console(target+" terminating");
     } catch (Exception e) {
       target.threadsFinished++;
       if (target.threadsFinished == target.threadsSpawned) target.TAKEOVER = false;
-      //debug("Exception in takeover thread "+tcount+"\n"+e);
+      //console("Exception in takeover thread "+tcount+"\n"+e);
     }
    }
 }
@@ -209,7 +209,7 @@ class TakeOver2d implements Runnable {
       try {
         thread.sleep((int)(1000/FRAMERATE));
       } catch (Exception e) {
-        //debug("Exception while sleeping "+this+":\n"+e);
+        //console("Exception while sleeping "+this+":\n"+e);
       }
     }
 
@@ -245,25 +245,25 @@ class TakeOver2d implements Runnable {
       steps = abs(xdiff);
     }
 
-    //debug("Starting takeover");
-    //debug("Target x value="+targetXValue);
-    //debug("Target y value="+targetYValue);
-    //debug("xdiff="+xdiff);
-    //debug("ydiff="+ydiff);
-    //debug("initialmxvalue="+mxvalue);
-    //debug("initialmyvalue="+myvalue);
-    //debug("xdir="+xdir);
-    //debug("ydir="+ydir);
-    //debug("xstep="+xstep);
-    //debug("ystep="+ystep);
-    //debug("steps="+steps);
+    //console("Starting takeover");
+    //console("Target x value="+targetXValue);
+    //console("Target y value="+targetYValue);
+    //console("xdiff="+xdiff);
+    //console("ydiff="+ydiff);
+    //console("initialmxvalue="+mxvalue);
+    //console("initialmyvalue="+myvalue);
+    //console("xdir="+xdir);
+    //console("ydir="+ydir);
+    //console("xstep="+xstep);
+    //console("ystep="+ystep);
+    //console("steps="+steps);
 
     for (int i = 0; i < steps; i++) {
       mxvalue += xstep*xdir;
       myvalue += ystep*ydir;
-      //debug(target+" in takeover. mxvalue="+mxvalue+" myvalue="+myvalue);
+      //console(target+" in takeover. mxvalue="+mxvalue+" myvalue="+myvalue);
       target.takeoverSetValue((int)round(mxvalue), (int)round(myvalue));
-      //debug("Waiting for "+takeover+" mills");
+      //console("Waiting for "+takeover+" mills");
       sleep(takeover);
     }
 
@@ -271,9 +271,8 @@ class TakeOver2d implements Runnable {
     try {
       thread.sleep(1000);
     } catch (Exception e) {
-      //debug("Exception while sleeping "+this+":\n"+e);
+      //console("Exception while sleeping "+this+":\n"+e);
     }
     if (target.threadsFinished == target.threadsSpawned) target.TAKEOVER = false;
   }
 }
-

@@ -152,19 +152,19 @@ void loadConfig() {
 }
 
 void saveConfig() {
-  //debug("saveConfig()");
+  //console("saveConfig()");
   int configlength = config.length;
-  //debug("Configlength "+configlength);
+  //console("Configlength "+configlength);
   if (CLINESIN == -1) { CLINESIN = configlength; configlength++; }
   if (CLINESOUT == -1) { CLINESOUT = configlength; configlength++; }
-  //debug("Configlength "+configlength);
+  //console("Configlength "+configlength);
   String[] newconfig = new String[configlength];
   for (int i = 0; i < config.length; i++) {
     newconfig[i] = config[i];
   }
-  //debug("linein"+CLINESIN);
-  //debug("lineout"+CLINESOUT);
-  //debug("Configlength "+newconfig.length);
+  //console("linein"+CLINESIN);
+  //console("lineout"+CLINESOUT);
+  //console("Configlength "+newconfig.length);
   newconfig[CLINESIN] = "in="+SOFTWAREIN;
   newconfig[CLINESOUT] = "out="+SOFTWARE;
   saveStrings("config.txt", newconfig);

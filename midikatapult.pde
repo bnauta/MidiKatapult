@@ -21,11 +21,11 @@ void setup(){
   if (launchpad.initialised) launchpad.sendCtl(0, 0, 0);
 
   if (launchpad.initialised) {
-    //debug("Launchpad detected, huzzah!");
+    //console("Launchpad detected, huzzah!");
     launchpad.reset();
     splash(true);
   } else {
-    //debug("Oh sorrow... No Launchpad was detected...");
+    //console("Oh sorrow... No Launchpad was detected...");
     splash(false);
   }
 }
@@ -61,9 +61,9 @@ void splash(boolean success) {
 }
 
 void initMidiSystem() {
-  //debug("Initiaing MIDI system...");
-  //debug("SOFTWARE: " + SOFTWARE);
-  //debug("SOFTWAREIN: " + SOFTWAREIN);
+  //console("Initiaing MIDI system...");
+  //console("SOFTWARE: " + SOFTWARE);
+  //console("SOFTWAREIN: " + SOFTWAREIN);
   receiverA = new MIDIListener("Launchpad");
   receiverB = new MIDIListener("Software");
   software = new MIDI(SOFTWARE);
@@ -128,7 +128,7 @@ void keyPressed() {
 
 // Testing functions
 
-void debug(String msg) {
+void console(String msg) {
   if (DEBUG) println(msg);
 }
 

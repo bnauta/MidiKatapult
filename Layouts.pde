@@ -58,17 +58,17 @@ void reloadLayouts() {
 
 void loadLayout(int targetPage) {
   selectedPage = targetPage;
-  //debug("Current page is " + currentPage);
-  //debug("Selected page is " + selectedPage);
+  //console("Current page is " + currentPage);
+  //console("Selected page is " + selectedPage);
   if (targetPage == PAGESELECTOR) {
     // Push active grid to buffer
-    //debug("Pushing to buffer ");
+    //console("Pushing to buffer ");
     for (int i = 0; i < grid.length; i++) {
       grids[currentPage][i] = grid[i];
     }
 
     // Destroy active grid
-    //debug("Destroying active grid ");
+    //console("Destroying active grid ");
     for (int i = 0; i < grid.length; i++) {
       if (grid[i] != null) {
         grid[i] = null;
@@ -90,7 +90,7 @@ void loadLayout(int targetPage) {
 
     if (grids[selectedPage][64] != null) {
       // If chosen grid is in buffer, restore it
-      //debug("Restoring from buffer ");
+      //console("Restoring from buffer ");
       for (int i = 0; i < grid.length; i++) {
         grid[i] = grids[selectedPage][i];
       }
@@ -103,7 +103,7 @@ void loadLayout(int targetPage) {
       pageName();
     } else {
       // If not, build it from layout data
-      //debug("Building from data");
+      //console("Building from data");
       int page;
       boolean loadPage = false;
       for (int i = 0; i < layout.length; i++) {
@@ -129,8 +129,8 @@ void loadLayout(int targetPage) {
             }
             pagenames[page-1] = pname;
             pagename = pname;
-            //debug("Building page "+page+", named "+pagename);
-            //debug("Entry was: "+layout[i]);
+            //console("Building page "+page+", named "+pagename);
+            //console("Entry was: "+layout[i]);
           }
           if (page == targetPage) { loadPage = true; } else { loadPage = false; }
         }
@@ -158,17 +158,17 @@ void loadLayout(int targetPage) {
               if (entry[4].equals("persistent")) { button.persistence = true; }
 
               String[] velArg = split(entry[4], "=");
-              debug("Entry: "+entry[4]);
+              console("Entry: "+entry[4]);
               if (velArg[0].equals("velocity")) {
-                debug("Setting velocity to "+Integer.parseInt(velArg[1])+" on "+button);
+                console("Setting velocity to "+Integer.parseInt(velArg[1])+" on "+button);
                 button.setVelocity(Integer.parseInt(velArg[1]));
               }
             }
             if (entry.length >= 6) {
               String[] velArg = split(entry[5], "=");
-              debug("Entry: "+entry[5]);
+              console("Entry: "+entry[5]);
               if (velArg[0].equals("velocity")) {
-                debug("Setting velocity to "+Integer.parseInt(velArg[1])+" on "+button);
+                console("Setting velocity to "+Integer.parseInt(velArg[1])+" on "+button);
                 button.setVelocity(Integer.parseInt(velArg[1]));
               }
             }
@@ -199,18 +199,18 @@ void loadLayout(int targetPage) {
           }
           if (type.equals("xfader")) {
             XFader xfader = new XFader(Integer.parseInt(entry[1]), Integer.parseInt(entry[2]), Integer.parseInt(entry[3]));
-            //debug("L"+entry.length);
+            //console("L"+entry.length);
             for (int ii = 0; ii < entry.length-4; ii++) {
-              //debug(entry[ii+4]);
+              //console(entry[ii+4]);
               if (split(entry[ii+4], "=")[0].equals("takeover")) xfader.setTakeover(Integer.parseInt(split(entry[ii+4], "=")[1]));
             }
             lastControl = xfader;
           }
           if (type.equals("ixfader")) {
             IXFader ixfader = new IXFader(Integer.parseInt(entry[1]), Integer.parseInt(entry[2]), Integer.parseInt(entry[3]));
-            //debug("L"+entry.length);
+            //console("L"+entry.length);
             for (int ii = 0; ii < entry.length-4; ii++) {
-              //debug(entry[ii+4]);
+              //console(entry[ii+4]);
               if (split(entry[ii+4], "=")[0].equals("takeover")) ixfader.setTakeover(Integer.parseInt(split(entry[ii+4], "=")[1]));
             }
             lastControl = ixfader;
@@ -218,7 +218,7 @@ void loadLayout(int targetPage) {
           if (type.equals("yfader")) {
             YFader yfader = new YFader(Integer.parseInt(entry[1]), Integer.parseInt(entry[2]), Integer.parseInt(entry[3]));
             for (int ii = 0; ii < entry.length-4; ii++) {
-              //debug(entry[ii+4]);
+              //console(entry[ii+4]);
               if (split(entry[ii+4], "=")[0].equals("takeover")) yfader.setTakeover(Integer.parseInt(split(entry[ii+4], "=")[1]));
             }
             lastControl = yfader;
@@ -226,7 +226,7 @@ void loadLayout(int targetPage) {
           if (type.equals("iyfader")) {
             IYFader iyfader = new IYFader(Integer.parseInt(entry[1]), Integer.parseInt(entry[2]), Integer.parseInt(entry[3]));
             for (int ii = 0; ii < entry.length-4; ii++) {
-              //debug(entry[ii+4]);
+              //console(entry[ii+4]);
               if (split(entry[ii+4], "=")[0].equals("takeover")) iyfader.setTakeover(Integer.parseInt(split(entry[ii+4], "=")[1]));
             }
             lastControl = iyfader;
@@ -282,7 +282,7 @@ void loadLayout(int targetPage) {
           }
           if (type.equals("drumrack")) {
             boolean invert = false;
-            debug("LENGTH: "+entry.length);
+            console("LENGTH: "+entry.length);
             if (entry.length > 8) {
               if (entry[8].equals("invert")) invert = true;
             }
@@ -291,7 +291,7 @@ void loadLayout(int targetPage) {
           if (type.equals("pad")) {
             Pad pad = new Pad(Integer.parseInt(entry[1]), Integer.parseInt(entry[2]), Integer.parseInt(entry[3]), Integer.parseInt(entry[4]));
             for (int ii = 0; ii < entry.length-4; ii++) {
-              //debug(entry[ii+4]);
+              //console(entry[ii+4]);
               if (split(entry[ii+4], "=")[0].equals("takeover")) pad.setTakeover(Integer.parseInt(split(entry[ii+4], "=")[1]));
               if (split(entry[ii+4], "=")[0].equals("invertx") && split(entry[ii+4], "=")[1].equals("yes") ) pad.invertx();
               if (split(entry[ii+4], "=")[0].equals("inverty") && split(entry[ii+4], "=")[1].equals("yes") ) pad.inverty();

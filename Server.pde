@@ -8,20 +8,20 @@ int serverPort = 6969;
 
 void initServer() {
   locatePort();
-  debug("Starting server on port " + serverPort);
+  console("Starting server on port " + serverPort);
   slaveServer = new Server(this, serverPort);
   //Server tsrv = new Server(this, serverPort);
 
   if (slaveServer != null) {
     online = true;
-    debug("Server started");
+    console("Server started");
   } else {
-    debug("Could not initialize server");
+    console("Could not initialize server");
   }
 }
 
 void locatePort() {
-  debug("Locating available port...");
+  console("Locating available port...");
   boolean foundPort = false;
   while (!foundPort) {
     Client probe = new Client(this, "127.0.0.1", serverPort);
@@ -51,7 +51,7 @@ void readServer() {
 
       if (message != null && message.equals("CONNECT")) {
         if (slaveConnected) {
-          debug("Other client tried connection, redirecting");
+          console("Other client tried connection, redirecting");
           slave.write("meta+trynextTT");
           message = null;
         }
@@ -61,7 +61,7 @@ void readServer() {
     } else {
       long now = (new Date()).getTime();
       if (now - lastping >= 2500) {
-        //debug("Last ping: "+(now - lastping));
+        //console("Last ping: "+(now - lastping));
         slaveConnected = false;
       }
       run = false;
@@ -70,7 +70,7 @@ void readServer() {
 }
 
 void interpretMessage(String message) {
-  debug("---"+message+"---");
+  console("---"+message+"---");
   if (message.equals("CONNECT") && !slaveConnected) {
       slaveConnected = true;
       wasConnected = true;
@@ -81,7 +81,7 @@ void interpretMessage(String message) {
   String[] messages = split(message, "+T");
 
   for (int i = 0; i < messages.length-1; i++) {
-    //debug("MSG:"+messages[i]);
+    //console("MSG:"+messages[i]);
     String[] components = split(messages[i], "+");
     if (components.length == 2) {
       if (!components[0].equals("") && !components[1].equals("")) {
@@ -124,7 +124,7 @@ Client getSlave() {
 
 void slaveOn(int x, int y, int lcolor) {
   String message = ""+x+"+"+y+"+"+lcolor+"TT";
-  //debug(message);
+  //console(message);
   slaveServer.write(message);
 }
 

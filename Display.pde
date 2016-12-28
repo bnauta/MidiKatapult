@@ -88,7 +88,7 @@ void clearDisplay() {
 
 void pageName() {
   pagename = pagenames[selectedPage-1];
-  //debug("pageName()"+pagename);
+  //console("pageName()"+pagename);
   fill(#000000);
   noStroke();
   rect(0, WINDOWSIZE-12, 250, 12);

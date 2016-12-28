@@ -49,7 +49,7 @@ class Control {
 
   void chainTo(Control control, boolean send) {
     chains[numberOfChains] = control;
-    //debug("Chaining "+this+" to "+control);
+    //console("Chaining "+this+" to "+control);
     chainSendFlags[numberOfChains] = send;
     numberOfChains++;
     isChained = true;
@@ -69,12 +69,12 @@ class Control {
 
 class GridSegment extends Control {
   void on() {
-    debug(this+"x="+this.x+" y="+this.y+" on()");
+    console(this+"x="+this.x+" y="+this.y+" on()");
     ledOn(x, y, activecolor);
   }
 
   void off() {
-    debug(this+"x="+this.x+" y="+this.y+" off()");
+    console(this+"x="+this.x+" y="+this.y+" off()");
     ledOn(x, y, idlecolor);
   }
 }
@@ -166,7 +166,7 @@ class Button extends GridSegment {
       grid[y*8+x] = this;
     }
     if (x == 8 && y < 7) {
-      //debug("Mapping side button:"+this);
+      //console("Mapping side button:"+this);
       grid[65+y] = this;
     }
     if (type == HOLD) {
@@ -185,7 +185,7 @@ class Button extends GridSegment {
   }
 
   void send() {
-    debug("Velocity is "+velocity);
+    console("Velocity is "+velocity);
     if (channel != 0) outputChannel = channel-1;
     if (velocity == -1) controlOut(x, y, state);
     if (velocity != -1 && state == ON) controlOut(x, y, velocity);
@@ -226,7 +226,7 @@ class Button extends GridSegment {
   }
 
   void update() {
-    debug("sn "+sn);
+    console("sn "+sn);
     if (value == 0) {
       off();
     }
@@ -268,7 +268,7 @@ class Note extends GridSegment {
       grid[y*8+x] = this;
     }
     if (x == 8 && y < 7) {
-      //debug("Mapping side button:"+this);
+      //console("Mapping side button:"+this);
       grid[65+y] = this;
     }
 
@@ -293,7 +293,7 @@ class Note extends GridSegment {
       grid[y*8+x] = this;
     }
     if (x == 8 && y < 7) {
-      //debug("Mapping side button:"+this);
+      //console("Mapping side button:"+this);
       grid[65+y] = this;
     }
 
@@ -328,14 +328,14 @@ class Note extends GridSegment {
       noteOut(note, 0);
       sendoff = false;
     } else {
-      //debug("sendOn");
+      //console("sendOn");
       noteOut(note, vel);
     }
   }
 
   void sendOff() {
     if (channel != 0) outputChannel = channel-1;
-    //debug("sendOff");
+    //console("sendOff");
     noteOut(note, 0);
   }
 
@@ -407,7 +407,7 @@ class CC extends GridSegment {
       grid[y*8+x] = this;
     }
     if (x == 8 && y < 7) {
-      //debug("Mapping side button:"+this);
+      //console("Mapping side button:"+this);
       grid[65+y] = this;
     }
 
@@ -420,13 +420,13 @@ class CC extends GridSegment {
       sendOff();
       sendoff = false;
     } else {
-      //debug("sendOn");
+      //console("sendOn");
       controlOut(note, vel);
     }
   }
 
   void sendOff() {
-    //debug("sendOff");
+    //console("sendOff");
     //controlOut(note, 0);
   }
 
@@ -481,7 +481,7 @@ class PC extends GridSegment {
       grid[y*8+x] = this;
     }
     if (x == 8 && y < 7) {
-      //debug("Mapping side button:"+this);
+      //console("Mapping side button:"+this);
       grid[65+y] = this;
     }
 
@@ -494,13 +494,13 @@ class PC extends GridSegment {
       sendOff();
       sendoff = false;
     } else {
-      //debug("sendOn");
+      //console("sendOn");
       programOut(note);
     }
   }
 
   void sendOff() {
-    //debug("sendOff");
+    //console("sendOff");
     //controlOut(note, 0);
   }
 
@@ -555,7 +555,7 @@ class Kbd extends GridSegment {
     try {
       robot = new Robot();
     } catch (AWTException e) {
-      debug("Exception while creating robot "+e);
+      console("Exception while creating robot "+e);
     }
     String keysS[] = split(keystring, "+");
     keys = new int[keysS.length];
@@ -567,7 +567,7 @@ class Kbd extends GridSegment {
       grid[y*8+x] = this;
     }
     if (x == 8 && y < 7) {
-      //debug("Mapping side button:"+this);
+      //console("Mapping side button:"+this);
       grid[65+y] = this;
     }
 
@@ -656,7 +656,7 @@ class Kbd extends GridSegment {
   void send() {
     for (int i = 0; i < keys.length; i++) {
       if (keys[i] != 0) {
-        debug("Sending keyPress "+keys[i]);
+        console("Sending keyPress "+keys[i]);
         robot.keyPress(keys[i]);
       }
     }
@@ -757,9 +757,9 @@ class Fader extends Control {
 
   boolean canUpdate() {
     long now = (new Date()).getTime();
-    debug("l "+lastupdate);
-    debug("n "+now);
-    debug("d "+(now-lastupdate));
+    console("l "+lastupdate);
+    console("n "+now);
+    console("d "+(now-lastupdate));
     if (now - lastupdate < 100) {
       lastupdate = now;
       return false;
@@ -830,7 +830,7 @@ class XFader extends Fader {
   }
 
   void setTakeover(int itakeover) {
-    //debug("setTakeover()");
+    //console("setTakeover()");
     takeover = itakeover;
   }
 
@@ -841,7 +841,7 @@ class XFader extends Fader {
       value = ivalue;
       propagateToChainedControls();
     } else {
-      //debug("nakedSetValueX() blocked because takeover is in progress.");
+      //console("nakedSetValueX() blocked because takeover is in progress.");
     }
   }
 
@@ -863,7 +863,7 @@ class XFader extends Fader {
       if (lastsx != sx) update();
       propagateToChainedControls();
     } else {
-      //debug("Delegating control to takeover routine");
+      //console("Delegating control to takeover routine");
       takeover(ivalue);
     }
   }
@@ -908,7 +908,7 @@ class IXFader extends Fader {
     if (lastsx != sx || canUpdate()) {
       if (page == selectedPage) {
         for(int i = xsize-1; i >= 0; i--) {
-          debug("sx="+((xsize-1)-sx)+" i="+i);
+          console("sx="+((xsize-1)-sx)+" i="+i);
           if (i >= (xsize-1)-sx) { grid[y*8+x+i].on(); } else { grid[y*8+x+i].off(); }
           //if (i <= sx) { grid[y*8+x+i].on(); } else { grid[y*8+x+i].off(); }
         }
@@ -924,7 +924,7 @@ class IXFader extends Fader {
   }
 
   void setTakeover(int itakeover) {
-    //debug("setTakeover()");
+    //console("setTakeover()");
     takeover = itakeover;
   }
 
@@ -935,7 +935,7 @@ class IXFader extends Fader {
       value = ivalue;
       propagateToChainedControls();
     } else {
-      //debug("nakedSetValueX() blocked because takeover is in progress.");
+      //console("nakedSetValueX() blocked because takeover is in progress.");
     }
   }
 
@@ -957,7 +957,7 @@ class IXFader extends Fader {
       if (lastsx != sx) update();
       propagateToChainedControls();
     } else {
-      //debug("Delegating control to takeover routine");
+      //console("Delegating control to takeover routine");
       takeover(ivalue);
     }
   }
@@ -1018,7 +1018,7 @@ class YFader extends Fader {
   }
 
   void setTakeover(int itakeover) {
-    //debug("setTakeover()");
+    //console("setTakeover()");
     takeover = itakeover;
   }
 
@@ -1030,7 +1030,7 @@ class YFader extends Fader {
       value = ivalue;
       propagateToChainedControls();
     } else {
-      //debug("nakedSetValue() blocked because takeover is in progress.");
+      //console("nakedSetValue() blocked because takeover is in progress.");
     }
   }
 
@@ -1040,7 +1040,7 @@ class YFader extends Fader {
     sy = y - rely;
     value = ivalue;
     send();
-    //debug("sy "+sy+" lastsy "+lastsy);
+    //console("sy "+sy+" lastsy "+lastsy);
     if (lastsy != sy) update();
     propagateToChainedControls();
   }
@@ -1055,7 +1055,7 @@ class YFader extends Fader {
       if (lastsy != sy) update();
       propagateToChainedControls();
     } else {
-      //debug("Delegating control to takeover routine");
+      //console("Delegating control to takeover routine");
       takeover(ivalue);
     }
   }
@@ -1089,12 +1089,12 @@ class IYFader extends Fader {
 
   void faderAction(FaderSegment sender) {
     sy = sender.y;
-    debug("!! sy="+sy);
+    console("!! sy="+sy);
     float rely = sy - y;
     float quantum = rely * (1 / ((float)ysize - 1));
     float amount = ((rely + quantum) / (float)ysize) * 127;
     setValue(127 + ((int)amount));
-    debug("!! value="+(127 + ((int)amount)));
+    console("!! value="+(127 + ((int)amount)));
   }
 
   void update() {
@@ -1104,7 +1104,7 @@ class IYFader extends Fader {
       for(int i = 0; i < ysize; i++) {
         int pos = y - sy;
         pos = (ysize-1)-pos;
-        debug("i="+i+" sy="+sy+" pos="+pos);
+        console("i="+i+" sy="+sy+" pos="+pos);
         if (i >= pos ) { grid[(y-i)*8+x].on(); } else { grid[(y-i)*8+x].off(); }
       }
 
@@ -1120,7 +1120,7 @@ class IYFader extends Fader {
   }
 
   void setTakeover(int itakeover) {
-    //debug("setTakeover()");
+    //console("setTakeover()");
     takeover = itakeover;
   }
 
@@ -1132,7 +1132,7 @@ class IYFader extends Fader {
       value = ivalue;
       propagateToChainedControls();
     } else {
-      //debug("nakedSetValue() blocked because takeover is in progress.");
+      //console("nakedSetValue() blocked because takeover is in progress.");
     }
   }
 
@@ -1142,7 +1142,7 @@ class IYFader extends Fader {
     sy = y - rely;
     value = ivalue;
     send();
-    //debug("sy "+sy+" lastsy "+lastsy);
+    //console("sy "+sy+" lastsy "+lastsy);
     if (lastsy != sy) update();
     propagateToChainedControls();
   }
@@ -1157,7 +1157,7 @@ class IYFader extends Fader {
       if (lastsy != sy) update();
       propagateToChainedControls();
     } else {
-      //debug("Delegating control to takeover routine");
+      //console("Delegating control to takeover routine");
       takeover(ivalue);
     }
   }
@@ -1258,11 +1258,11 @@ class XSlider extends Slider {
     segment = sender.x;
     if (lastSegment - 1 == segment) {
       decrease();
-      //debug("Decreasing "+this+" to "+value);
+      //console("Decreasing "+this+" to "+value);
     }
     if (lastSegment + 1 == segment) {
       increase();
-      //debug("Increasing "+this+" to "+value);
+      //console("Increasing "+this+" to "+value);
     }
     sender.on();
     lastSegment = segment;
@@ -1440,7 +1440,7 @@ class Pad extends Control {
   }
 
   void padAction(PadSegment sender) {
-    //debug("padAction()");
+    //console("padAction()");
     sy = sender.y;
     float rely = sy - y;
     float quantum = rely * (1 / ((float)ysize - 1));
@@ -1489,9 +1489,9 @@ class Pad extends Control {
       sx = x+(int)(ivalue / step);
       xvalue = ivalue;
       propagateToChainedControls();
-      //debug("nakedSetValueX() succeeded.");
+      //console("nakedSetValueX() succeeded.");
     } else {
-      //debug("nakedSetValueX() blocked because takeover is in progress.");
+      //console("nakedSetValueX() blocked because takeover is in progress.");
     }
   }
 
@@ -1503,9 +1503,9 @@ class Pad extends Control {
       sy = (ysize-1)+(y - rely);
       yvalue = ivalue;
       propagateToChainedControls();
-      //debug("nakedSetValueY() succeeded.");
+      //console("nakedSetValueY() succeeded.");
     } else {
-      //debug("nakedSetValueY() blocked because takeover is in progress.");
+      //console("nakedSetValueY() blocked because takeover is in progress.");
     }
   }
 
@@ -1518,8 +1518,8 @@ class Pad extends Control {
       step = 127 / (xsize-1);
       sx = x+(int)(ixvalue / step);
       xvalue = ixvalue;
-      //debug("xvalue = "+xvalue+". sx = "+sx);
-      //debug("yvalue = "+yvalue+". sy = "+sy);
+      //console("xvalue = "+xvalue+". sx = "+sx);
+      //console("yvalue = "+yvalue+". sy = "+sy);
       send();
       if (lastsy != sy || lastsx != sx) update();
       propagateToChainedControls();
@@ -1535,13 +1535,13 @@ class Pad extends Control {
       step = 127 / (xsize-1);
       sx = x+(int)(ixvalue / step);
       xvalue = ixvalue;
-      //debug("xvalue = "+xvalue+". sx = "+sx);
-      //debug("yvalue = "+yvalue+". sy = "+sy);
+      //console("xvalue = "+xvalue+". sx = "+sx);
+      //console("yvalue = "+yvalue+". sy = "+sy);
       send();
       if (lastsy != sy || lastsx != sx) update();
       propagateToChainedControls();
     } else {
-      //debug("Delegating control to takeover routine");
+      //console("Delegating control to takeover routine");
       takeover(ixvalue, iyvalue);
     }
   }
@@ -1553,7 +1553,7 @@ class Pad extends Control {
 
   void update() {
     if (page == selectedPage) {
-      //debug("update() sx="+sx+" sy="+sy);
+      //console("update() sx="+sx+" sy="+sy);
       grid[lastsx+lastsy*8].off();
       grid[sx+sy*8].on();
       lastsx = sx;
@@ -1562,9 +1562,9 @@ class Pad extends Control {
   }
 
   void update(PadSegment sender) {
-    //debug("update("+sender+") sx="+sx+" sy="+sy);
+    //console("update("+sender+") sx="+sx+" sy="+sy);
     if ((sender.x == x && sender.y == y) || (sender.x-1 == x && sender.y == y)) {
-      //debug("is the case");
+      //console("is the case");
       if (sender.x == sx && sender.y == sy) { sender.on(); } else { sender.off(); }
       grid[sx+sy*8].on();
       if (lastsx != sx || lastsy != sy) {
@@ -1574,7 +1574,7 @@ class Pad extends Control {
       }
 
     } else {
-      //debug("not the case");
+      //console("not the case");
       if (sender.x == sx && sender.y == sy) sender.on();
       if (sender.x != sx || sender.y != sy) sender.off();
     }
@@ -1715,7 +1715,7 @@ class XMeter extends Meter {
   void update() {
 
     if (canUpdate()) {
-      //debug("go");
+      //console("go");
     if (page == selectedPage) {
       for(int i = 0; i < xsize; i++) {
 
@@ -1746,7 +1746,7 @@ class XMeter extends Meter {
       lastsx = sx;
       lastsxf = sxf;
     }
-    } else { /*debug("filtered");*/ }
+    } else { /*console("filtered");*/ }
   }
 
 
@@ -1798,13 +1798,13 @@ class YMeter extends Meter {
   }
 
   void update() {
-    //debug("diff: "+abs((lastsy-lastsyf) - (sy-syf)));
+    //console("diff: "+abs((lastsy-lastsyf) - (sy-syf)));
 
     if (page == selectedPage && canUpdate()) {
       for(int i = y; i >= y-(ysize-1); i--) {
         if (i != sy && i != sy-1) {
           grid[i*8+x].off();
-          //debug("turning off 0");
+          //console("turning off 0");
         }
 
         if (i == sy-1 && !(sy - syf >= 0.56) && !(((sy - syf) > 0.43 && (syf - sy) < 0.56))) {
@@ -1815,18 +1815,18 @@ class YMeter extends Meter {
         if (i == sy) {
           if (sy - syf <= 0.43) {
             grid[i*8+x].on();
-            //debug("turning on 0");
+            //console("turning on 0");
           }
 
           if (sy - syf >= 0.56) {
             grid[(i-1)*8+x].on();
-            //debug("turning on -1");
+            //console("turning on -1");
           }
 
           if (((sy - syf) > 0.43 && (syf - sy) < 0.56) && sy != y-ysize-1) {
             grid[i*8+x].on();
             grid[(i-1)*8+x].on();
-            //debug("turning on both");
+            //console("turning on both");
           }
         }
 
@@ -1845,7 +1845,7 @@ class YMeter extends Meter {
       int rely = ((int)(ivalue / step));
       syf = y - abs((ivalue / step));
       sy = y - rely;
-      //debug("syf: "+syf);
+      //console("syf: "+syf);
       value = ivalue;
       propagateToChainedControls();
   }
@@ -1855,7 +1855,7 @@ class YMeter extends Meter {
       int rely = ((int)(ivalue / step));
       sy = y - rely;
       syf = y - abs((ivalue / step));
-      //debug("syf: "+syf);
+      //console("syf: "+syf);
       value = ivalue;
       send();
       if (lastsyf != syf) update();
@@ -2111,8 +2111,8 @@ class CrsFader extends Control {
       int center = abs(round(((float)xsize/2)));
       float relpos = ((relx - center)/((float)xsize-1))*2;
 
-      debug("CrsFader update. Sender x = "+sender.x+", relx="+relx);
-      debug("Relative position: "+relpos+", center="+center);
+      console("CrsFader update. Sender x = "+sender.x+", relx="+relx);
+      console("Relative position: "+relpos+", center="+center);
     } else {
       int relx = sender.x - x + 1;
       int center = xsize/2;
@@ -2124,8 +2124,8 @@ class CrsFader extends Control {
         relpos = (relx - center)/(float)center;
       }
 
-      debug("CrsFader update. Sender x = "+sender.x+", relx="+relx);
-      debug("Relative position: "+relpos+", center="+center);
+      console("CrsFader update. Sender x = "+sender.x+", relx="+relx);
+      console("Relative position: "+relpos+", center="+center);
 
       factor = relpos;
       if (factor != 0 && !running) {
@@ -2159,7 +2159,7 @@ class CrsFader extends Control {
   void update() {
 
     if (canUpdate()) {
-      //debug("go");
+      //console("go");
     if (page == selectedPage) {
       for(int i = 0; i < xsize; i++) {
 
@@ -2190,7 +2190,7 @@ class CrsFader extends Control {
       lastsx = sx;
       lastsxf = sxf;
     }
-    } else { /*debug("filtered");*/ }
+    } else { /*console("filtered");*/ }
   }
 
 
@@ -2203,7 +2203,7 @@ class CrsFader extends Control {
       value = ivalue;
       propagateToChainedControls();
     } else {
-      debug("Blocked because thread is running");
+      console("Blocked because thread is running");
     }
   }
 
@@ -2224,4 +2224,3 @@ class CrsFader extends Control {
   }
 
 }
-
