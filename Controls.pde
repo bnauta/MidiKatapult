@@ -1,5 +1,8 @@
 import java.awt.Robot;
 import java.awt.event.InputEvent.*;
+import java.awt.AWTException;
+import java.awt.event.KeyEvent;
+import java.util.Date;
 
 class Control {
   int x;
